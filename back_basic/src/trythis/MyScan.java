@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class MyScan {
 	public static void main(String[] args) {
-		// scanProfile();
+		scanProfile();
 		scanTemp();
 	}
 
