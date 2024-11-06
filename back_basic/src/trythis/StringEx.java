@@ -14,21 +14,21 @@ public class StringEx {
 
 		System.out.println(sb.hashCode());
 		sb.append(" is a pencil");
-		System.out.println(sb.toString());
+		System.out.println(sb);
 
 		sb.delete(8, 10);
-		System.out.println(sb.toString());
+		System.out.println(sb);
 
 		sb.insert(7, " my");
-		System.out.println(sb.toString());
+		System.out.println(sb);
 
 		sb.replace(8, 10, "your");
-		System.out.println(sb.toString());
+		System.out.println(sb);
 
 		sb.setLength(5);
-		System.out.println(sb.toString());
+		System.out.println(sb);
 		sb.reverse();
-		System.out.println(sb.toString());
+		System.out.println(sb);
 		System.out.println(sb.hashCode());
 		System.out.printf("capacity = %d%n", sb.capacity());
 
