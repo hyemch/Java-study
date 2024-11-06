@@ -1,4 +1,4 @@
-package trythis;
+package trythis.comp;
 
 public class TryInvoiceItem {
 	public static void main(String[] args) {
