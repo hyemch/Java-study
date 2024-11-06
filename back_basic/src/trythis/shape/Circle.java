@@ -1,8 +1,8 @@
-package trythis;
+package trythis.shape;
 
-public class Circle {
+public class Circle extends Shape {
 	private double radius;
-	private String color;
+	private final String color;
 
 	public Circle() {
 		radius = 1.0;
@@ -18,6 +18,10 @@ public class Circle {
 		return radius;
 	}
 
+	protected void setRadius(double radius) {
+		this.radius = radius;
+	}
+
 	public double getArea() {
 		return Math.PI * Math.pow(radius, 2);
 	}
@@ -26,7 +30,17 @@ public class Circle {
 		return 2 * Math.PI * radius;
 	}
 
-	public String toString() {
-		return "Circle[radius=%.1f]의 둘레는 %.2f, 면적은 %.2f".formatted(radius, this.getCircumference(), this.getArea());
+	public double getPerimeter() {
+		return Math.PI * 2 * radius;
 	}
+
+	@Override
+	public double calArea() {
+		return Math.PI * Math.pow(radius, 2);
+	}
+
+	public String toString() {
+		return "Circle[radius=%.1f]의 둘레는 %.2f, 면적은 %.2f".formatted(radius, this.getPerimeter(), this.getArea());
+	}
+
 }

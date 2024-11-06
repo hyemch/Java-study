@@ -1,6 +1,6 @@
-package trythis;
+package trythis.shape;
 
-public class Rectangle {
+public class Rectangle extends Shape {
 	private double height;
 	private double width;
 
@@ -38,8 +38,14 @@ public class Rectangle {
 		return 2 * (width + height);
 	}
 
+	@Override
+	public double calArea() {
+		return width * height;
+	}
+
 	public String toString() {
 		return "Rectangle[height=%.1f, width=%.1f]의 둘레는 %.1f, 면적은 %.1f".formatted(height, width, getPerimeter(),
 			getArea());
 	}
+
 }
