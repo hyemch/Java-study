@@ -1,6 +1,6 @@
 package oop;
 
-public interface Swimmable {
+public interface Swimable {
 	public void swim();
 
 }
