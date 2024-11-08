@@ -1,22 +1,32 @@
-package oop;
+package trythis;
 
 public class Account {
-	private int accountNo;
+	private String id;
 	private String name;
-	private double balance;
+	private int balance;
 
-	public Account(int accountNo, String name, double balance) {
-		this.accountNo = accountNo;
+	public Account() {
+		this("44-444-444", "자바");
+	}
+
+	public Account(String id, String name) {
+		this.id = id;
+		this.name = name;
+		this.balance = 0;
+	}
+
+	public Account(String id, String name, int balance) {
+		this.id = id;
 		this.name = name;
 		this.balance = balance;
 	}
 
-	public int getAccountNo() {
-		return accountNo;
+	public String getId() {
+		return id;
 	}
 
-	public void setAccountNo(int accountNo) {
-		this.accountNo = accountNo;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getName() {
@@ -27,51 +37,47 @@ public class Account {
 		this.name = name;
 	}
 
-	public double getBalance() {
+	public int getBalance() {
 		return balance;
 	}
 
-	public void setBalance(double balance) {
+	public void setBalance(int balance) {
 		this.balance = balance;
 	}
 
-	public void insert(int num, String name, double amount) {
-		// this.accountNo = num;
-		// this.name = name;
-		// this.balance = amount;
-		setAccountNo(num);
-		setName(name);
-		setBalance(amount);
-	}
-
-	public void deposit(double amount) {
-		System.out.println(getName() + "님의 계좌로 " + amount + "원이 입금되었습니다.");
-		// setBalance(getBalance() + amount);
+	public int deposit(int amount) {
+		System.out.println(name + "님의 계좌로 " + amount + "원이 입금되었습니다.");
 		this.balance += amount;
-		System.out.println(getName() + "님의 잔액은 " + String.format("%.1f", getBalance()) + "원 입니다.");
+		// System.out.println(name + "님의 잔액은 " + String.format("%d", getBalance()) + "원 입니다.");
+		return this.balance;
 	}
 
-	public void withdraw(double amount) {
-		if (amount > this.getBalance()) {
+	public int withdraw(int amount) {
+		System.out.println("출금을 시도합니다.");
+		if (amount > balance) {
 			System.out.println("잔액이 부족하여 출금할 수 없습니다.");
-			return;
+		} else {
+			System.out.println(name + "님의 계좌에서 " + amount + "원이 출금되었습니다.");
+			this.balance -= amount;
+			// System.out.println(name + "님의 잔액은 " + String.format("%d", getBalance()) + "원 입니다.");
 		}
-		// setBalance(this.getBalance() - amount);
-		this.balance -= amount;
-		System.out.println(getName() + "님의 계좌에서 " + amount + "원이 출금되었습니다.");
-		System.out.println(getName() + "님의 잔액은 " + String.format("%.1f", getBalance()) + "원 입니다.");
+		return balance;
 	}
 
-	public void checkBalance() {
-		System.out.println(
-			getName() + "님의" + getAccountNo() + " 계좌 현재 잔액은 " + String.format("%.1f", getBalance()) + "원 입니다.");
+	public int transferTo(Account another, int amount) {
+		System.out.println(another.name + "님에게 " + amount + "원 송금 시도");
+		if (amount > balance) {
+			System.out.println("잔액이 부족하여 출금할 수 없습니다.");
+		} else {
+			System.out.println(another.name + "님에게 " + amount + "원 을 송금을 시도하였습니다..");
+			this.balance -= amount;
+			another.balance += amount;
+			System.out.println(this.name + "님이 " + another.name + "님의 계좌로 " + amount + "원 을 송금하였습니다.");
+		}
+		return balance;
 	}
 
-	public void display() {
-		System.out.println("******************");
-		System.out.println("계좌번호: " + getAccountNo());
-		System.out.println("예금주: " + getName());
-		System.out.println("잔액: " + String.format("%.1f", getBalance()));
-		System.out.println("******************\n");
+	public String toString() {
+		return "Account [id=" + getId() + ", name=" + getName() + ", balance=" + getBalance() + "]";
 	}
 }
