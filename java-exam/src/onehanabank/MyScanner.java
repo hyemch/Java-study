@@ -49,13 +49,17 @@ public class MyScanner {
 		return value;
 	}
 
-	public String scan(String message) {
-		System.out.print(message);
-		return this.scanner.next();
-	}
+	// public String scan(String message) {
+	// 	System.out.print(message);
+	// 	return this.scanner.next();
+	// }
 
 	public String scanLine(String message) {
 		System.out.println(message);
+		// String input = this.scanner.nextLine();
+		// if (input.isEmpty() || input.equals("0")) {
+		// 	return null;
+		// }
 		return this.scanner.nextLine();
 	}
 
