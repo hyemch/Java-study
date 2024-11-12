@@ -27,7 +27,18 @@ public abstract class Account implements Comparable<Account> {
 
 	public void deposit(double amount) {
 		if (amount == 0) {
-			amount = scanner.scanDouble("출금할 금액을 입력해주세요 :");
+			while (true) {
+				try {
+					String input = scanner.scanLine("입금하실 금액을 입력해주세요: ");
+					if (input.isEmpty() || input.equals("0")) {
+						return;
+					}
+					amount = Double.parseDouble(input);
+					break;
+				} catch (NumberFormatException e) {
+					System.out.println("올바른 금액을 입력해주세요. ");
+				}
+			}
 		}
 		if (amount > 0) {
 			balance += amount;
@@ -40,17 +51,6 @@ public abstract class Account implements Comparable<Account> {
 	public abstract void transfer(ArrayList<Account> accounts) throws
 		TransferNotAllowedException,
 		InsufficientBalanceException;
-
-	public StringBuilder getToAccountList(ArrayList<Account> accounts) {
-		StringBuilder toAccountList = new StringBuilder();
-		for (Account value : accounts) {
-			if (value.accountNo == accountNo) {
-				continue;
-			}
-			toAccountList.append(value).append(" ");
-		}
-		return toAccountList;
-	}
 
 	// public void transfer(Account toAccount, double amount) throws TransferNotAllowedException,
 	// 	InsufficientBalanceException {

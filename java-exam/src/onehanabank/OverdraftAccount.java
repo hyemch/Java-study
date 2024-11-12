@@ -26,11 +26,34 @@ public class OverdraftAccount extends Account {
 	@Override
 	public void withdraw(double amount) {
 		if (amount == 0) {
-			amount = scanner.scanDouble("출금하실 금액을 입력해주세요: ");
+			while (true) {
+				try {
+					String input = scanner.scanLine("출금하실 금액을 입력해주세요: ");
+					if (input.isEmpty() || input.equals("0")) {
+						return;
+					}
+					amount = Double.parseDouble(input);
+					break;
+				} catch (NumberFormatException e) {
+					System.out.println("올바른 금액을 입력해주세요");
+				}
+			}
+			// amount = scanner.scanDouble("출금하실 금액을 입력해주세요: ");
 		}
 		balance -= amount;
 		System.out.printf("%s에서 %,.0f원이 출금되었습니다.%n", accountName, amount);
 
+	}
+
+	private StringBuilder getToAccountList(ArrayList<Account> accounts) {
+		StringBuilder toAccountList = new StringBuilder();
+		for (Account value : accounts) {
+			if (value.accountNo == accountNo) {
+				continue;
+			}
+			toAccountList.append(value).append(" ");
+		}
+		return toAccountList;
 	}
 
 	@Override

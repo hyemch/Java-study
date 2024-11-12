@@ -75,35 +75,51 @@ public class AccountManager {
 
 	public void executeMaturity(FixedDepositAccount account) {
 		while (true) {
-			String input = scanner.scanLine("예치 개월수를 입력하세요(1~60개월): ");
-			if (input.isEmpty() || input.equals("0")) {
-				continue;
-			}
-			int months = Integer.parseInt(input);
-			if (months < 1 || months > 60) {
-				System.out.println("잘못된 입력입니다. 1~60개월 사이의 값을 입력해 주세요.");
-				continue;
-			}
-			double interestRate = account.calculateInterestRate(months);
-			StringBuilder toAccountList = getToAccountList(account.accountNo);
-			String check = scanner.scanLine("%d개월(적용금리 %.2f)로 만기 처리하시겠어요? (y/n)".formatted(months,
-				interestRate));
-			if (check.isEmpty() || check.equals("0")) {
-				continue;
-			}
-			if (check.equalsIgnoreCase("y")) {
-				double maturityAmount = account.calculateMaturityAmount(months, interestRate);
-				int toAccount = scanner.scanInt("어디로 보낼까요? 계좌 번호를 입력해주세요(" + toAccountList + "): ");
-				for (Account target : accounts) {
-					if (target.accountNo == toAccount) {
-						account.maturity(maturityAmount, target);
-						System.out.println("이체 완료!");
-						break;
-					}
+			try {
+				String inputMonths = scanner.scanLine("예치 개월수를 입력하세요(1~60개월): ");
+				if (inputMonths.isEmpty() || inputMonths.equals("0")) {
+					break;
 				}
-				System.out.println("일치하는 계좌가 없습니다.");
-			} else {
-				System.out.println("만기처리가 취소되었습니다.");
+				int months = Integer.parseInt(inputMonths);
+				if (months < 1 || months > 60) {
+					System.out.println("잘못된 입력입니다. 1~60개월 사이의 값을 입력해 주세요.");
+					continue;
+				}
+				double interestRate = account.calculateInterestRate(months);
+				StringBuilder toAccountList = getToAccountList(account.accountNo);
+				String check = scanner.scanLine("%d개월(적용금리 %.3f)로 만기 처리하시겠어요? (y/n)".formatted(months,
+					interestRate));
+				if (check.isEmpty() || check.equals("0")) {
+					continue;
+				}
+				if (check.equalsIgnoreCase("y")) {
+					double maturityAmount = account.calculateMaturityAmount(months, interestRate);
+					while (true) {
+						try {
+							String inputToAccount = scanner.scanLine("어디로 보낼까요? 계좌 번호를 입력해주세요(" + toAccountList + "):"
+								+ " ");
+							if (inputToAccount.isEmpty() || inputToAccount.equals("0")) {
+								return;
+							}
+							int toAccount = Integer.parseInt(inputToAccount);
+							for (Account target : accounts) {
+								if (target.accountNo == toAccount && target.accountNo != account.accountNo) {
+									account.maturity(maturityAmount, target);
+									return;
+								}
+							}
+							System.out.println("일치하는 계좌가 없습니다.");
+							break;
+						} catch (NumberFormatException e) {
+							System.out.println("올바른 계좌번호를 입력해주세요");
+						}
+					}
+					// int toAccount = scanner.scanInt("어디로 보낼까요? 계좌 번호를 입력해주세요(" + toAccountList + "): ");
+				} else {
+					System.out.println("만기처리가 취소되었습니다.");
+				}
+			} catch (NumberFormatException e) {
+				System.out.println("유효한 숫자를 입력해주세요: ");
 			}
 		}
 
@@ -161,8 +177,9 @@ public class AccountManager {
 			case "+" -> {
 				if (account instanceof FixedDepositAccount) {
 					executeMaturity((FixedDepositAccount)account);
+				} else {
+					account.deposit(0);
 				}
-				account.deposit(0);
 
 			}
 			case "-" -> {
