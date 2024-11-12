@@ -2,6 +2,9 @@ package onehanabank;
 
 import java.util.ArrayList;
 
+import onehanabank.myexception.TransferNotAllowedException;
+import onehanabank.myexception.WithdrawNotAllowedException;
+
 public class FixedDepositAccount extends Account implements MaturityProcessable {
 	private final MaturityHandler maturityHandler;
 

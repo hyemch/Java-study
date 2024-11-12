@@ -3,26 +3,20 @@ package onehanabank;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import onehanabank.myexception.InsufficientBalanceException;
+import onehanabank.myexception.WithdrawNotAllowedException;
+
 public class AccountManager {
-	private ArrayList<Account> accounts;
-	private MyScanner scanner;
+	private final ArrayList<Account> accounts;
+	private final MyScanner scanner;
 
 	public AccountManager() {
 		this.accounts = new ArrayList<>();
 		this.scanner = new MyScanner();
 	}
 
-	private StringBuilder getAccountList() {
-		Collections.sort(this.accounts);
-		StringBuilder accountList = new StringBuilder();
-		for (Account value : accounts) {
-			accountList.append(value.toString()).append(" ");
-		}
-		return accountList;
-	}
-
 	public Account selectAccount() {
-		StringBuilder accountList = getAccountList();
+		StringBuilder accountList = AccountFinder.getAccountList(accounts);
 		while (true) {
 			String choice = scanner.scanLine(">> 통장을 선택하세요. ( " + accountList + ") ");
 			if (choice.isEmpty() || choice.equals("0")) {
@@ -35,7 +29,6 @@ public class AccountManager {
 						return account;
 					}
 				}
-
 			} catch (NumberFormatException e) {
 				System.out.println("유효한 계좌번호를 입력해 주세요.");
 			}
@@ -94,79 +87,5 @@ public class AccountManager {
 				}
 			}
 		}
-	}
-
-	// private StringBuilder getToAccountList(int accountNo) {
-	// 	Collections.sort(this.accounts);
-	// 	StringBuilder toAccountList = new StringBuilder();
-	// 	for (Account value : accounts) {
-	// 		if (value.getAccountNo() == accountNo) {
-	// 			continue;
-	// 		}
-	// 		toAccountList.append(value).append(" ");
-	// 	}
-	// 	return toAccountList;
-	// }
-
-	// public boolean processMaturity(FixedDepositAccount account) {
-	// 	while (true) {
-	// 		try {
-	// 			String inputMonths = scanner.scanLine("예치 개월수를 입력하세요(1~60개월): ");
-	// 			if (inputMonths.isEmpty() || inputMonths.equals("0")) {
-	// 				break;
-	// 			}
-	// 			int months = Integer.parseInt(inputMonths);
-	// 			if (months < 1 || months > 60) {
-	// 				System.out.println("잘못된 입력입니다. 1~60개월 사이의 값을 입력해 주세요.");
-	// 				continue;
-	// 			}
-	// 			double interestRate = account.calculateInterestRate(months);
-	// 			StringBuilder toAccountList = getToAccountList(account.getAccountNo());
-	// 			String check = scanner.scanLine("%d개월(적용금리 %.2f%%)로 만기 처리하시겠어요? (y/n)".formatted(months,
-	// 				interestRate));
-	// 			if (check.isEmpty() || check.equals("0")) {
-	// 				break;
-	// 			} else if (check.equalsIgnoreCase("y")) {
-	// 				double maturityAmount = account.calculateMaturityAmount(months, interestRate);
-	// 				while (true) {
-	// 					try {
-	// 						String inputToAccount = scanner.scanLine("어디로 보낼까요? 계좌 번호를 입력해주세요(" + toAccountList + "):"
-	// 							+ " ");
-	// 						if (inputToAccount.isEmpty() || inputToAccount.equals("0")) {
-	// 							break;
-	// 						}
-	// 						int toAccount = Integer.parseInt(inputToAccount);
-	// 						for (Account target : accounts) {
-	// 							if (target.getAccountNo() == toAccount
-	// 								&& target.getAccountNo() != account.getAccountNo()) {
-	// 								account.maturity(maturityAmount, target);
-	// 								accounts.remove(account);
-	// 								return true;
-	// 							}
-	// 						}
-	// 						System.out.println("일치하는 계좌가 없습니다.");
-	// 					} catch (NumberFormatException e) {
-	// 						System.out.println("올바른 계좌번호를 입력해주세요");
-	// 					}
-	// 				}
-	// 			} else if (!check.equalsIgnoreCase("n")) {
-	// 				System.out.println("잘못된 입력입니다. 예치 개월수부터 다시 입력해주세요.");
-	// 			}
-	// 		} catch (NumberFormatException e) {
-	// 			System.out.println("유효한 숫자를 입력해주세요: ");
-	// 		}
-	// 	}
-	// 	return false;
-	// }
-
-	public static void main(String[] args) throws
-		WithdrawNotAllowedException {
-		AccountManager accountManagerManager = new AccountManager();
-
-		accountManagerManager.accounts.add(new SavingAccount(1, "홍길동", 0));
-		accountManagerManager.accounts.add(new OverdraftAccount(3, "홍길동", 2000));
-		accountManagerManager.accounts.add(new FixedDepositAccount(2, "홍길동", 50000000));
-
-		accountManagerManager.startBankManagement();
 	}
 }

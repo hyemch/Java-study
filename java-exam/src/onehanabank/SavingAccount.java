@@ -1,5 +1,8 @@
 package onehanabank;
 
+import onehanabank.myexception.InsufficientBalanceException;
+import onehanabank.myexception.NegativeAmountException;
+
 public class SavingAccount extends Account {
 	public SavingAccount(int accountNo, String name, double balance) {
 		super(accountNo, "자유입출금", name, balance);

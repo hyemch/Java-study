@@ -1,5 +1,7 @@
 package onehanabank;
 
+import onehanabank.myexception.NegativeAmountException;
+
 public class OverdraftAccount extends Account {
 	public OverdraftAccount(int accountNo, String name, double balance) {
 		super(accountNo, "마이너스통장", name, balance);
