@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public abstract class Account implements Comparable<Account> {
 	MyScanner scanner = new MyScanner();
-	private int accountNo;
-	private String accountName;
+	private final int accountNo;
+	private final String accountName;
 	private String name;
 	private double balance;
 
@@ -49,7 +49,13 @@ public abstract class Account implements Comparable<Account> {
 
 	public abstract String selectMenu();
 
+	public abstract Double withdraw(double amount) throws WithdrawNotAllowedException, InsufficientBalanceException;
+
 	public void deposit(double amount) {
+		if (amount < 0) {
+			System.out.println("입금 금액은 음수가 될 수 없습니다.");
+			return;
+		}
 		if (amount == 0) {
 			while (true) {
 				try {
@@ -58,9 +64,14 @@ public abstract class Account implements Comparable<Account> {
 						return;
 					}
 					amount = Double.parseDouble(input);
+					if (amount < 0) {
+						throw new NegativeAmountException("입금 금액은 음수가 될 수 없습니다.");
+					}
 					break;
 				} catch (NumberFormatException e) {
 					System.out.println("올바른 금액을 입력해주세요. ");
+				} catch (NegativeAmountException e) {
+					System.out.println(e.getMessage());
 				}
 			}
 		}
@@ -69,8 +80,6 @@ public abstract class Account implements Comparable<Account> {
 			System.out.printf("%s 계좌에 %,.0f원이 입금되었습니다.%n", accountName, amount);
 		}
 	}
-
-	public abstract Double withdraw(double amount) throws WithdrawNotAllowedException, InsufficientBalanceException;
 
 	public StringBuilder getToAccountList(ArrayList<Account> accounts) {
 		StringBuilder toAccountList = new StringBuilder();
@@ -132,21 +141,3 @@ public abstract class Account implements Comparable<Account> {
 		return accountNo + ":" + accountName;
 	}
 }
-
-// @Override
-// public void deposit() {
-// 	double amount = scanner.scanDouble("입금할 금액을 입력해주세요.");
-// 	if (amount > 0) {
-// 		balance += amount;
-// 		System.out.printf("%s 계좌에 %,.0f원이 입금되었습니다.%n", accountName, amount);
-// 	}
-// }
-
-// @Override
-// public abstract void withdraw() throws WithdrawNotAllowedException, InsufficientBalanceException;
-
-// @Override
-// public abstract void transfer() throws
-// 	TransferNotAllowedException,
-// 	WithdrawNotAllowedException,
-// 	InsufficientBalanceException;
