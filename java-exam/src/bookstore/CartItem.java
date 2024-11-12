@@ -1,7 +1,7 @@
 package bookstore;
 
 public class CartItem {
-	private Book book;
+	private final Book book;
 	private int quantity;
 
 	public CartItem(Book book, int quantity) {

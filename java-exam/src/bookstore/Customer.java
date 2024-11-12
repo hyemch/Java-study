@@ -3,8 +3,8 @@ package bookstore;
 import static bookstore.BookstoreManagement.*;
 
 public class Customer {
-	private String name;
-	private String contract;
+	private final String name;
+	private final String contract;
 
 	public Customer(String name, String contract) {
 		this.name = name;

@@ -8,18 +8,14 @@ import java.util.Date;
 
 public class Cart {
 	MyScanner scanner = new MyScanner();
-	private ArrayList<CartItem> items;
+	private final ArrayList<CartItem> items;
 
 	public Cart() {
 		items = new ArrayList<>();
 	}
 
-
 	public void addBook(ArrayList<Book> books) {
-		// for (Book book : books) {
-		// 	System.out.println(book.toString());
-		// }
-		books.forEach(book-> System.out.println(book.toString()));
+		books.forEach(book -> System.out.println(book.toString()));
 		int bookId = scanner.scanInt("추가할 도서의 ID를 입력하세요: ");
 		for (Book book : books) {
 			if (book.getId() == bookId) {
