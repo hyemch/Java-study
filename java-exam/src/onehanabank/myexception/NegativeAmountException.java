@@ -1,4 +1,4 @@
-package onehanabank;
+package onehanabank.myexception;
 
 public class NegativeAmountException extends Exception {
 	public NegativeAmountException(String message) {

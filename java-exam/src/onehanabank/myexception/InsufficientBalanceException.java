@@ -1,4 +1,4 @@
-package onehanabank;
+package onehanabank.myexception;
 
 public class InsufficientBalanceException extends Exception {
 	public InsufficientBalanceException(String message) {

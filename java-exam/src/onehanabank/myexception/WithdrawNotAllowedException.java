@@ -1,4 +1,4 @@
-package onehanabank;
+package onehanabank.myexception;
 
 public class WithdrawNotAllowedException extends Exception {
 	public WithdrawNotAllowedException(String message) {
