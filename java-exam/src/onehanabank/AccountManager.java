@@ -15,6 +15,10 @@ public class AccountManager {
 		this.scanner = new MyScanner();
 	}
 
+	public ArrayList<Account> getAccounts() {
+		return accounts;
+	}
+
 	public Account selectAccount() {
 		StringBuilder accountList = AccountFinder.getAccountList(accounts);
 		while (true) {
@@ -44,6 +48,7 @@ public class AccountManager {
 			Account account = selectAccount();
 			if (account == null) {
 				System.out.println("금일 OneHanaBank는 업무를 종료합니다. 감사합니다.");
+				scanner.close();
 				break;
 			}
 			executeBankManager(account);
