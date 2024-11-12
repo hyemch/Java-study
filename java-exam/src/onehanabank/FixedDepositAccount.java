@@ -3,6 +3,7 @@ package onehanabank;
 import java.util.ArrayList;
 
 public class FixedDepositAccount extends Account {
+
 	public FixedDepositAccount(int accountNo, String name, double balance) {
 		super(accountNo, "정기예금", name, balance);
 	}
@@ -34,12 +35,13 @@ public class FixedDepositAccount extends Account {
 	// }
 
 	@Override
-	public void withdraw(double amount) throws WithdrawNotAllowedException {
+	public Double withdraw(double amount) throws WithdrawNotAllowedException {
 		try {
 			throw new WithdrawNotAllowedException("출금할 수 없는 통장입니다.");
 		} catch (WithdrawNotAllowedException e) {
 			System.out.println(e.getMessage());
 		}
+		return null;
 	}
 
 	@Override
@@ -54,8 +56,7 @@ public class FixedDepositAccount extends Account {
 	public void maturity(double amount, Account toAccount) {
 		this.balance = 0;
 		toAccount.deposit(amount);
-		System.out.printf("%s에 %,.0f원이 입금되었습니다.\n"
-			+ "정기예금 통장은 해지되었습니다. 감사합니다.", accountName, amount);
+		System.out.println("정기예금 통장은 해지되었습니다. 감사합니다.");
 	}
 
 	// public void maturity(int months, StringBuilder toAccountList) {
@@ -80,28 +81,39 @@ public class FixedDepositAccount extends Account {
 	// }
 
 	public double calculateMaturityAmount(int months, double interestRate) {
-		return balance * (1 + interestRate * months / 12);
+		return balance * (1 + interestRate / 100);
 	}
 
 	public double calculateInterestRate(int months) {
 		if (months >= 48) {
-			return 0.029;
+			// return 0.029;
+			return 2.9;
 		} else if (months >= 36) {
-			return 0.029;
+			// return 0.029;
+			return 2.9;
+
 		} else if (months >= 24) {
-			return 0.029;
+			// return 0.029;
+			return 2.9;
+
 		} else if (months >= 12) {
-			return 0.0335;
+			// return 0.0335;
+			return 3.35;
+
 		} else if (months >= 9) {
-			return 0.0335;
+			return 3.35;
+			// return 0.0335;
 		} else if (months >= 6) {
-			return 0.034;
+			// return 0.034;
+			return 3.4;
+
 		} else if (months >= 3) {
-			return 0.0335;
-		} else if (months >= 1) {
-			return 0.03;
+			// return 0.0335;
+			return 3.35;
+		} else {
+			// return 0.03;
+			return 3;
 		}
-		return 0;
 	}
 }
 

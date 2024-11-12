@@ -12,17 +12,6 @@ public class AccountManager {
 		this.scanner = new MyScanner();
 	}
 
-	public void addAccount(Account account) {
-		this.accounts.add(account);
-	}
-
-	public void showAccounts() {
-		accounts.forEach(System.out::println);
-		for (Account account : accounts) {
-			account.showInfo();
-		}
-	}
-
 	private StringBuilder getAccountList() {
 		Collections.sort(this.accounts);
 		StringBuilder accountList = new StringBuilder();
@@ -39,7 +28,7 @@ public class AccountManager {
 			if (value.accountNo == accountNo) {
 				continue;
 			}
-			toAccountList.append(value.toString()).append(" ");
+			toAccountList.append(value).append(" ");
 		}
 		return toAccountList;
 	}
@@ -60,20 +49,14 @@ public class AccountManager {
 				}
 
 			} catch (NumberFormatException e) {
-				System.out.println("유효한 숫자를 입력해 주세요.");
+				System.out.println("유효한 계좌번호를 입력해 주세요.");
 			}
-			// int choiceNum = Integer.parseInt(choice);
-			// for (Account account : accounts) {
-			// 	if (account.accountNo == choiceNum) {
-			// 		return account;
-			// 	}
-			// }
 			System.out.println("일치하는 통장이 없습니다.");
 		}
 		return null;
 	}
 
-	public void executeMaturity(FixedDepositAccount account) {
+	public boolean executeMaturity(FixedDepositAccount account) {
 		while (true) {
 			try {
 				String inputMonths = scanner.scanLine("예치 개월수를 입력하세요(1~60개월): ");
@@ -87,67 +70,41 @@ public class AccountManager {
 				}
 				double interestRate = account.calculateInterestRate(months);
 				StringBuilder toAccountList = getToAccountList(account.accountNo);
-				String check = scanner.scanLine("%d개월(적용금리 %.3f)로 만기 처리하시겠어요? (y/n)".formatted(months,
+				String check = scanner.scanLine("%d개월(적용금리 %.2f%%)로 만기 처리하시겠어요? (y/n)".formatted(months,
 					interestRate));
 				if (check.isEmpty() || check.equals("0")) {
-					continue;
-				}
-				if (check.equalsIgnoreCase("y")) {
+					break;
+				} else if (check.equalsIgnoreCase("y")) {
 					double maturityAmount = account.calculateMaturityAmount(months, interestRate);
 					while (true) {
 						try {
 							String inputToAccount = scanner.scanLine("어디로 보낼까요? 계좌 번호를 입력해주세요(" + toAccountList + "):"
 								+ " ");
 							if (inputToAccount.isEmpty() || inputToAccount.equals("0")) {
-								return;
+								break;
 							}
 							int toAccount = Integer.parseInt(inputToAccount);
 							for (Account target : accounts) {
 								if (target.accountNo == toAccount && target.accountNo != account.accountNo) {
 									account.maturity(maturityAmount, target);
-									return;
+									accounts.remove(account);
+									return true;
 								}
 							}
 							System.out.println("일치하는 계좌가 없습니다.");
-							break;
 						} catch (NumberFormatException e) {
 							System.out.println("올바른 계좌번호를 입력해주세요");
 						}
 					}
 					// int toAccount = scanner.scanInt("어디로 보낼까요? 계좌 번호를 입력해주세요(" + toAccountList + "): ");
-				} else {
-					System.out.println("만기처리가 취소되었습니다.");
+				} else if (!check.equalsIgnoreCase("n")) {
+					System.out.println("잘못된 입력입니다. 예치 개월수부터 다시 입력해주세요.");
 				}
 			} catch (NumberFormatException e) {
 				System.out.println("유효한 숫자를 입력해주세요: ");
 			}
 		}
-
-	}
-
-	private void executeTransfer(Account account) throws
-		TransferNotAllowedException,
-		InsufficientBalanceException {
-		StringBuilder toAccountList = getToAccountList(account.accountNo);
-		int toAccount = scanner.scanInt("어디로 보낼까요? 계좌 번호를 입력해주세요(" + toAccountList + "): ");
-		for (Account target : accounts) {
-			if (target.accountNo == toAccount) {
-				int amount = scanner.scanInt("%s에 보낼 금액을 입력해주세요: ");
-				account.transfer(accounts);
-				System.out.println("이체 완료!");
-				break;
-			}
-		}
-		System.out.println("일치하는 계좌가 없습니다.");
-	}
-
-	private void executeWithdraw(Account account) throws WithdrawNotAllowedException, InsufficientBalanceException {
-		double amount = scanner.scanDouble("출금하실 금액을 입력해주세요: ");
-		try {
-			account.withdraw(amount);
-		} catch (InsufficientBalanceException e) {
-			System.out.println(e.getMessage());
-		}
+		return false;
 	}
 
 	public void startBankManagement() throws
@@ -171,35 +128,37 @@ public class AccountManager {
 		TransferNotAllowedException {
 		Collections.sort(this.accounts);
 		account.showInfo();
-		String choice = account.selectMenu();
-		StringBuilder toAccountList = getToAccountList(account.accountNo);
-		switch (choice) {
-			case "+" -> {
-				if (account instanceof FixedDepositAccount) {
-					executeMaturity((FixedDepositAccount)account);
-				} else {
-					account.deposit(0);
+		while (true) {
+			String choice = account.selectMenu();
+			if (choice.isEmpty() || choice.equals("0")) {
+				break;
+			}
+			switch (choice) {
+				case "+" -> {
+					if (account instanceof FixedDepositAccount) {
+						if (executeMaturity((FixedDepositAccount)account)) {
+							return;
+						}
+					} else {
+						account.deposit(0);
+					}
 				}
-
-			}
-			case "-" -> {
-				try {
-					account.withdraw(0);
-				} catch (InsufficientBalanceException e) {
-					System.out.println(e.getMessage());
+				case "-" -> {
+					try {
+						account.withdraw(0);
+					} catch (InsufficientBalanceException e) {
+						System.out.println(e.getMessage());
+					}
 				}
-			}
-			case "T" -> {
-				// executeTransfer(account);
-				account.transfer(accounts);
-			}
-			case "I" -> {
-				account.showInfo();
-			}
-			case "0", "" -> {
-			}
-			default -> {
-				System.out.println("잘못된 요청입니다. 이전 메뉴로 돌아갑니다.");
+				case "T", "t" -> {
+					account.transfer(accounts);
+				}
+				case "I", "i" -> {
+					account.showInfo();
+				}
+				default -> {
+					System.out.println("잘못된 요청입니다.");
+				}
 			}
 		}
 	}

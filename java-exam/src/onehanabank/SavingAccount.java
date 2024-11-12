@@ -17,66 +17,36 @@ public class SavingAccount extends Account {
 		return scanner.scanLine("> 원하시는 업무는? (+: 입금, -: 출금, T: 이체, I: 정보)");
 	}
 
-	// public void executeMenu(ArrayList<Account> accounts) throws InsufficientBalanceException {
-	// 	String choice = scanner.scanLine("> 원하시는 업무는? (+: 입금, -: 출금, T: 이체, I: 정보)");
-	// 	switch (choice) {
-	// 		case "+" -> {
-	// 			double amount = scanner.scanDouble("입금할 금액을 입력해주세요 :");
-	// 			deposit(amount);
-	// 		}
-	// 		case "-" -> {
-	// 			try {
-	// 				this.withdraw();
-	// 			} catch (InsufficientBalanceException e) {
-	// 				System.out.println(e.getMessage());
-	// 			}
-	// 		}
-	// 		case "T" -> {
-	// 			transfer(accounts, amount);
-	// 		}
-	// 		case "I" -> {
-	// 			this.showInfo();
-	// 		}
-	// 		case "0", "" -> {
-	// 		}
-	// 		default -> {
-	// 			System.out.println("잘못된 요청입니다. 이전 메뉴로 돌아갑니다.");
-	// 		}
-	// 	}
-	// }
-
-	// @Override
-	// public void deposit(double amount) {
-	// 	if (amount == -1) {
-	// 		amount = scanner.scanDouble("출금할 금액을 입력해주세요 :");
-	// 	}
-	// 	if (amount > 0) {
-	// 		balance += amount;
-	// 		System.out.printf("%s 계좌에 %,.0f원이 입금되었습니다.%n", accountName, amount);
-	// 	}
-	// }
-
 	@Override
-	public void withdraw(double amount) throws InsufficientBalanceException {
+	public Double withdraw(double amount) throws InsufficientBalanceException {
 		if (amount == 0) {
 			while (true) {
 				try {
 					String input = scanner.scanLine("출금하실 금액을 입력해주세요: ");
 					if (input.isEmpty() || input.equals("0")) {
-						return;
+						return null;
 					}
 					amount = Double.parseDouble(input);
+					if (balance < amount) {
+						System.out.printf("잔액이 부족합니다! (잔액 : %,.0f원)\n".formatted(balance));
+						amount = 0;
+						continue;
+					}
 					break;
 				} catch (NumberFormatException e) {
 					System.out.println("올바른 금액을 입력해주세요");
 				}
 			}
-		}
-		if (balance < amount) {
-			throw new InsufficientBalanceException("잔액이 부족합니다! (잔액 : %,.0f원)".formatted(balance));
+		} else {
+			if (balance < amount) {
+				System.out.printf("잔액이 부족합니다! (잔액 : %,.0f원)\n".formatted(balance));
+				return null;
+			}
 		}
 		balance -= amount;
-		System.out.printf("자유 입출금  총장에서 %,.0f원이 출금되었습니다.\n", amount);
+		System.out.printf("%s에서 %,.0f원이 출금되었습니다.잔액은 %,.0f원 입니다.%n", accountName, amount, balance);
+
+		return amount;
 	}
 
 	private StringBuilder getToAccountList(ArrayList<Account> accounts) {
@@ -90,22 +60,21 @@ public class SavingAccount extends Account {
 		return toAccountList;
 	}
 
-	@Override
-	public void transfer(ArrayList<Account> accounts) throws InsufficientBalanceException {
-		StringBuilder toAccountList = getToAccountList(accounts);
-
-		int toAccount = scanner.scanInt("어디로 보낼까요? 계좌 번호를 입력해주세요(" + toAccountList + "): ");
-		for (Account target : accounts) {
-			if (target.accountNo == toAccount) {
-				double amount = scanner.scanDouble("%s에 보낼 금액을 입력해주세요: ");
-				withdraw(amount);
-				target.deposit(amount);
-				System.out.printf("%s에 %,.0f원이 입금되었습니다.", target.accountName, amount);
-				break;
-			}
-		}
-		System.out.println("일치하는 계좌가 없습니다.");
-	}
+	// @Override
+	// public void transfer(ArrayList<Account> accounts) throws InsufficientBalanceException {
+	// 	StringBuilder toAccountList = getToAccountList(accounts);
+	// 	int toAccount = scanner.scanInt("어디로 보낼까요? 계좌 번호를 입력해주세요(" + toAccountList + "): ");
+	// 	for (Account target : accounts) {
+	// 		if (target.accountNo == toAccount) {
+	// 			double amount = scanner.scanDouble("%s에 보낼 금액을 입력해주세요: ");
+	// 			withdraw(amount);
+	// 			target.deposit(amount);
+	// 			System.out.printf("%s에 %,.0f원이 입금되었습니다.", target.accountName, amount);
+	// 			break;
+	// 		}
+	// 	}
+	// 	System.out.println("일치하는 계좌가 없습니다.");
+	// }
 }
 
 // @Override
@@ -166,3 +135,42 @@ public class SavingAccount extends Account {
 // 			}
 // 		}
 // 	}
+
+// public void executeMenu(ArrayList<Account> accounts) throws InsufficientBalanceException {
+// 	String choice = scanner.scanLine("> 원하시는 업무는? (+: 입금, -: 출금, T: 이체, I: 정보)");
+// 	switch (choice) {
+// 		case "+" -> {
+// 			double amount = scanner.scanDouble("입금할 금액을 입력해주세요 :");
+// 			deposit(amount);
+// 		}
+// 		case "-" -> {
+// 			try {
+// 				this.withdraw();
+// 			} catch (InsufficientBalanceException e) {
+// 				System.out.println(e.getMessage());
+// 			}
+// 		}
+// 		case "T" -> {
+// 			transfer(accounts, amount);
+// 		}
+// 		case "I" -> {
+// 			this.showInfo();
+// 		}
+// 		case "0", "" -> {
+// 		}
+// 		default -> {
+// 			System.out.println("잘못된 요청입니다. 이전 메뉴로 돌아갑니다.");
+// 		}
+// 	}
+// }
+
+// @Override
+// public void deposit(double amount) {
+// 	if (amount == -1) {
+// 		amount = scanner.scanDouble("출금할 금액을 입력해주세요 :");
+// 	}
+// 	if (amount > 0) {
+// 		balance += amount;
+// 		System.out.printf("%s 계좌에 %,.0f원이 입금되었습니다.%n", accountName, amount);
+// 	}
+// }

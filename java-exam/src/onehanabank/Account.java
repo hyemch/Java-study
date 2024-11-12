@@ -46,11 +46,87 @@ public abstract class Account implements Comparable<Account> {
 		}
 	}
 
-	public abstract void withdraw(double amount) throws WithdrawNotAllowedException, InsufficientBalanceException;
+	public abstract Double withdraw(double amount) throws WithdrawNotAllowedException, InsufficientBalanceException;
 
-	public abstract void transfer(ArrayList<Account> accounts) throws
+	private StringBuilder getToAccountList(ArrayList<Account> accounts) {
+		StringBuilder toAccountList = new StringBuilder();
+		for (Account value : accounts) {
+			if (value.accountNo == accountNo) {
+				continue;
+			}
+			toAccountList.append(value).append(" ");
+		}
+		return toAccountList;
+	}
+
+	public void transfer(ArrayList<Account> accounts) throws
 		TransferNotAllowedException,
-		InsufficientBalanceException;
+		InsufficientBalanceException, WithdrawNotAllowedException {
+		StringBuilder toAccountList = getToAccountList(accounts);
+		while (true) {
+			try {
+				String inputToAccount = scanner.scanLine("어디로 보낼까요? 계좌 번호를 입력해주세요( " + toAccountList + "):"
+					+ " ");
+				if (inputToAccount.isEmpty() || inputToAccount.equals("0")) {
+					break;
+				}
+				int toAccount = Integer.parseInt(inputToAccount);
+				boolean found = false;
+				for (Account target : accounts) {
+					if (target.accountNo == toAccount && target.accountNo != accountNo) {
+						found = true;
+						// String inputAmount = scanner.scanLine("%s에 보낼 금액을 입력해주세요: ".formatted(target.accountName));
+						// if (inputAmount.isEmpty() || inputAmount.equals("0")) {
+						// 	continue;
+						// }
+						// double amount = Double.parseDouble(inputAmount);
+						// Double resultAmount = withdraw(amount);
+						// if (resultAmount == null) {
+						// 	continue;
+						// }
+						// target.deposit(resultAmount);
+						// // System.out.printf("%s에 %,.0f원이 입금되었습니다.\n", target.accountName, amount);
+						// return;
+						while (true) {
+							String inputAmount = scanner.scanLine("%s에 보낼 금액을 입력해주세요: ".formatted(target.accountName));
+							if (inputAmount.isEmpty() || inputAmount.equals("0")) {
+								break;
+							}
+							try {
+								double amount = Double.parseDouble(inputAmount);
+								Double resultAmount = withdraw(amount);
+								if (resultAmount != null) {
+									target.deposit(resultAmount);
+									return;
+								}
+							} catch (InsufficientBalanceException e) {
+								System.out.println(e.getMessage());
+							} catch (NumberFormatException e) {
+								System.out.println("올바른 금액을 입력해주세요.");
+							}
+						}
+						break;
+					}
+				}
+				if (!found) {
+					System.out.println("일치하는 계좌가 없습니다.");
+				}
+			} catch (NumberFormatException e) {
+				System.out.println("올바른 계좌번호를 입력해주세요");
+			}
+		}
+		// int toAccount = scanner.scanInt("어디로 보낼까요? 계좌 번호를 입력해주세요(" + toAccountList + "): ");
+		// for (Account target : accounts) {
+		// 	if (target.accountNo == toAccount) {
+		// 		double amount = scanner.scanDouble("%s에 보낼 금액을 입력해주세요: ");
+		// 		withdraw(amount);
+		// 		target.deposit(amount);
+		// 		System.out.printf("%s에 %,.0f원이 입금되었습니다.", target.accountName, amount);
+		// 		break;
+		// 	}
+		// }
+		// System.out.println("일치하는 계좌가 없습니다.");
+	}
 
 	// public void transfer(Account toAccount, double amount) throws TransferNotAllowedException,
 	// 	InsufficientBalanceException {
