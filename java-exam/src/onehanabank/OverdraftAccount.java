@@ -17,6 +17,10 @@ public class OverdraftAccount extends Account {
 
 	@Override
 	public Double withdraw(double amount) {
+		if (amount < 0) {
+			System.out.println("출금 금액은 음수가 될 수 없습니다.");
+			return null;
+		}
 		if (amount == 0) {
 			while (true) {
 				try {
@@ -25,9 +29,14 @@ public class OverdraftAccount extends Account {
 						return null;
 					}
 					amount = Double.parseDouble(input);
+					if (amount < 0) {
+						throw new NegativeAmountException("출금 금액은 음수가 될 수 없습니다.");
+					}
 					break;
 				} catch (NumberFormatException e) {
 					System.out.println("올바른 금액을 입력해주세요");
+				} catch (NegativeAmountException e) {
+					System.out.println(e.getMessage());
 				}
 			}
 		}
@@ -36,34 +45,3 @@ public class OverdraftAccount extends Account {
 		return amount;
 	}
 }
-
-// 	@Override
-// 	public void transfer(ArrayList<Account> accounts) throws InsufficientBalanceException {
-// 		StringBuilder toAccountList = getToAccountList(accounts);
-// 		int toAccount = scanner.scanInt("어디로 보낼까요? 계좌 번호를 입력해주세요(" + toAccountList + "): ");
-// 		for (Account target : accounts) {
-// 			if (target.accountNo == toAccount) {
-// 				double amount = scanner.scanDouble("%s에 보낼 금액을 입력해주세요: ");
-// 				withdraw(amount);
-// 				target.deposit(amount);
-// 				System.out.printf("%s에 %,.0f원이 입금되었습니다.", target.accountName, amount);
-// 				break;
-// 			}
-// 		}
-// 		System.out.println("일치하는 계좌가 없습니다.");
-// 	}
-// }
-
-// @Override
-// public void withdraw(double amount) {
-// 	balance -= amount;
-// 	//한도 제한 없음.
-// 	System.out.printf("마이너스 통장에서 %,.0f원이 출금되었습니다.%n", amount);
-// }
-//
-// @Override
-// public void transfer(Account targetAccount, double amount) throws TransferNotAllowedException {
-// 	withdraw(amount);
-// 	targetAccount.deposit(amount);
-// 	System.out.printf("%d에서 %s로 %,.0f원이 입금되었습니다.", this.accountNo, targetAccount.accountName, amount);
-// }
