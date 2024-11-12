@@ -7,7 +7,7 @@ public class OverdraftAccount extends Account {
 
 	@Override
 	public void showInfo() {
-		System.out.printf("%s 통장 - 잔액: %,.0f원 %n", accountName, balance);
+		System.out.printf("%s 통장 - 잔액: %,.0f원 %n", getAccountName(), getBalance());
 	}
 
 	@Override
@@ -31,8 +31,8 @@ public class OverdraftAccount extends Account {
 				}
 			}
 		}
-		balance -= amount;
-		System.out.printf("%s에서 %,.0f원이 출금되었습니다.잔액은 %,.0f원 입니다.%n", accountName, amount, balance);
+		this.setBalance(getBalance() - amount);
+		System.out.printf("%s에서 %,.0f원이 출금되었습니다.잔액은 %,.0f원 입니다.%n", getAccountName(), amount, getBalance());
 		return amount;
 	}
 }

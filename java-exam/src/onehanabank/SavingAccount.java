@@ -1,7 +1,5 @@
 package onehanabank;
 
-import java.util.ArrayList;
-
 public class SavingAccount extends Account {
 	public SavingAccount(int accountNo, String name, double balance) {
 		super(accountNo, "자유입출금", name, balance);
@@ -9,7 +7,8 @@ public class SavingAccount extends Account {
 
 	@Override
 	public void showInfo() {
-		System.out.printf("%s 통장 (계좌번호: %d, 잔액: %,.0f원, 예금주: %s)%n", accountName, accountNo, balance, name);
+		System.out.printf("%s 통장 (계좌번호: %d, 잔액: %,.0f원, 예금주: %s)%n", getAccountName(), getAccountNo(), getBalance(),
+			getName());
 	}
 
 	@Override
@@ -27,38 +26,41 @@ public class SavingAccount extends Account {
 						return null;
 					}
 					amount = Double.parseDouble(input);
-					if (balance < amount) {
-						System.out.printf("잔액이 부족합니다! (잔액 : %,.0f원)\n".formatted(balance));
-						continue;
+					if (getBalance() < amount) {
+						throw new InsufficientBalanceException("잔액이 부족합니다! (잔액 : %,.0f원)\n".formatted(getBalance()));
+						// System.out.printf("잔액이 부족합니다! (잔액 : %,.0f원)\n".formatted(getBalance()));
+						// continue;
 					}
 					break;
 				} catch (NumberFormatException e) {
 					System.out.println("올바른 금액을 입력해주세요");
+				} catch (InsufficientBalanceException e) {
+					System.out.println(e.getMessage());
 				}
 			}
 		} else {
-			if (balance < amount) {
-				System.out.printf("잔액이 부족합니다! (잔액 : %,.0f원)\n".formatted(balance));
+			if (getBalance() < amount) {
+				System.out.printf("잔액이 부족합니다! (잔액 : %,.0f원)\n".formatted(getBalance()));
 				return null;
 			}
 		}
-		balance -= amount;
-		System.out.printf("%s에서 %,.0f원이 출금되었습니다.잔액은 %,.0f원 입니다.%n", accountName, amount, balance);
+		setBalance(getBalance() - amount);
+		System.out.printf("%s에서 %,.0f원이 출금되었습니다.잔액은 %,.0f원 입니다.%n", getAccountName(), amount, getBalance());
 
 		return amount;
 	}
-
-	private StringBuilder getToAccountList(ArrayList<Account> accounts) {
-		StringBuilder toAccountList = new StringBuilder();
-		for (Account value : accounts) {
-			if (value.accountNo == accountNo) {
-				continue;
-			}
-			toAccountList.append(value).append(" ");
-		}
-		return toAccountList;
-	}
 }
+
+// private StringBuilder getToAccountList(ArrayList<Account> accounts) {
+// 	StringBuilder toAccountList = new StringBuilder();
+// 	for (Account value : accounts) {
+// 		if (value.accountNo == accountNo) {
+// 			continue;
+// 		}
+// 		toAccountList.append(value).append(" ");
+// 	}
+// 	return toAccountList;
+// }
 
 // @Override
 // public void transfer(ArrayList<Account> accounts) throws InsufficientBalanceException {

@@ -4,10 +4,34 @@ import java.util.ArrayList;
 
 public abstract class Account implements Comparable<Account> {
 	MyScanner scanner = new MyScanner();
-	protected int accountNo;
-	protected String accountName;
-	protected String name;
-	protected double balance;
+	private int accountNo;
+	private String accountName;
+	private String name;
+	private double balance;
+
+	public int getAccountNo() {
+		return accountNo;
+	}
+
+	public String getAccountName() {
+		return accountName;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public double getBalance() {
+		return balance;
+	}
+
+	public void setBalance(double balance) {
+		this.balance = balance;
+	}
 
 	public Account(int accountNo, String accountName, String name, double balance) {
 		this.accountNo = accountNo;
@@ -48,7 +72,7 @@ public abstract class Account implements Comparable<Account> {
 
 	public abstract Double withdraw(double amount) throws WithdrawNotAllowedException, InsufficientBalanceException;
 
-	private StringBuilder getToAccountList(ArrayList<Account> accounts) {
+	public StringBuilder getToAccountList(ArrayList<Account> accounts) {
 		StringBuilder toAccountList = new StringBuilder();
 		for (Account value : accounts) {
 			if (value.accountNo == accountNo) {
@@ -102,7 +126,7 @@ public abstract class Account implements Comparable<Account> {
 			}
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		return accountNo + ":" + accountName;
