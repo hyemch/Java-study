@@ -1,7 +1,7 @@
 package company;
 
 public class PermanentWorker extends Worker {
-	private int salary;
+	private final int salary;
 
 	public PermanentWorker(String name, int salary) {
 		super(name);
