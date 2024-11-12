@@ -62,39 +62,4 @@ public class BookstoreManagement {
 			+ "*‧｡♥｡‧˚♡˚‧｡♥｡‧˚♡˚‧｡♥｡‧˚♡˚‧｡♥｡‧˚♡˚‧｡♥｡‧˚♡˚‧｡♥｡‧*" + COLOR_RESET;
 		System.out.println(menu);
 	}
-
-	public void startLibraryManagement() {
-		while (true) {
-			showDisplay();
-			int choice = scanner.scanInt("메뉴 번호를 선택해주세요: ");
-			switch (choice) {
-				case 1 -> {
-					System.out.println(customer.toString());
-				}
-				case 2 -> {
-					cart.printCart();
-				}
-				case 3 -> {
-					cart.addBook(books);
-				}
-				case 4 -> {
-					cart.removeBook();
-				}
-				case 5 -> {
-					cart.clearCart();
-				}
-				case 6 -> {
-					cart.printReceipt(customer);
-				}
-				case 7 -> {
-					System.out.println("프로그램이 종료되었습니다.");
-					scanner.close();
-					return;
-				}
-				default -> {
-					System.out.println("잘못된 입력입니다. 메뉴 번호를 선택해주세요!");
-				}
-			}
-		}
-	}
 }
