@@ -18,7 +18,7 @@ public class SavingAccount extends Account {
 	}
 
 	@Override
-	public Double withdraw(double amount) throws InsufficientBalanceException {
+	public Double withdraw(double amount) {
 		if (amount == 0) {
 			while (true) {
 				try {
@@ -29,7 +29,6 @@ public class SavingAccount extends Account {
 					amount = Double.parseDouble(input);
 					if (balance < amount) {
 						System.out.printf("잔액이 부족합니다! (잔액 : %,.0f원)\n".formatted(balance));
-						amount = 0;
 						continue;
 					}
 					break;
@@ -59,23 +58,23 @@ public class SavingAccount extends Account {
 		}
 		return toAccountList;
 	}
-
-	// @Override
-	// public void transfer(ArrayList<Account> accounts) throws InsufficientBalanceException {
-	// 	StringBuilder toAccountList = getToAccountList(accounts);
-	// 	int toAccount = scanner.scanInt("어디로 보낼까요? 계좌 번호를 입력해주세요(" + toAccountList + "): ");
-	// 	for (Account target : accounts) {
-	// 		if (target.accountNo == toAccount) {
-	// 			double amount = scanner.scanDouble("%s에 보낼 금액을 입력해주세요: ");
-	// 			withdraw(amount);
-	// 			target.deposit(amount);
-	// 			System.out.printf("%s에 %,.0f원이 입금되었습니다.", target.accountName, amount);
-	// 			break;
-	// 		}
-	// 	}
-	// 	System.out.println("일치하는 계좌가 없습니다.");
-	// }
 }
+
+// @Override
+// public void transfer(ArrayList<Account> accounts) throws InsufficientBalanceException {
+// 	StringBuilder toAccountList = getToAccountList(accounts);
+// 	int toAccount = scanner.scanInt("어디로 보낼까요? 계좌 번호를 입력해주세요(" + toAccountList + "): ");
+// 	for (Account target : accounts) {
+// 		if (target.accountNo == toAccount) {
+// 			double amount = scanner.scanDouble("%s에 보낼 금액을 입력해주세요: ");
+// 			withdraw(amount);
+// 			target.deposit(amount);
+// 			System.out.printf("%s에 %,.0f원이 입금되었습니다.", target.accountName, amount);
+// 			break;
+// 		}
+// 	}
+// 	System.out.println("일치하는 계좌가 없습니다.");
+// }
 
 // @Override
 // public void withdraw(double amount) throws InsufficientBalanceException {

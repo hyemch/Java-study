@@ -29,11 +29,6 @@ public class FixedDepositAccount extends Account {
 		return scanner.scanLine("> 정기예금이 만기되었습니다. (+: 만기처리, -: 출금, T: 이체, I: 정보)");
 	}
 
-	// @Override
-	// public void deposit(double amount) {
-	//
-	// }
-
 	@Override
 	public Double withdraw(double amount) throws WithdrawNotAllowedException {
 		try {
@@ -59,59 +54,26 @@ public class FixedDepositAccount extends Account {
 		System.out.println("정기예금 통장은 해지되었습니다. 감사합니다.");
 	}
 
-	// public void maturity(int months, StringBuilder toAccountList) {
-	// 	double interestRate = calculateInterestRate(months);
-	// 	while (true) {
-	// 		String check = scanner.scanLine("%d개월(적용금리 %.2f)로 만기 처리하시겠어요? (y/n)".formatted(months,
-	// 			interestRate));
-	// 		if (check.isEmpty() || check.equals("0")) {
-	// 			continue;
-	// 		}
-	// 		if (check.equalsIgnoreCase("y")) {
-	// 			// 만기 처리 및 이체 로직
-	// 			double maturityAmount = balance * (1 + interestRate * months / 12);
-	// 			deposit(maturityAmount);
-	// 		} else {
-	// 			System.out.println("만기처리가 취소되었습니다.");
-	// 			continue;
-	// 		}
-	// 		break;
-	// 	}
-	// 만기 처리 후 종료
-	// }
-
 	public double calculateMaturityAmount(int months, double interestRate) {
 		return balance * (1 + interestRate / 100);
 	}
 
 	public double calculateInterestRate(int months) {
 		if (months >= 48) {
-			// return 0.029;
 			return 2.9;
 		} else if (months >= 36) {
-			// return 0.029;
 			return 2.9;
-
 		} else if (months >= 24) {
-			// return 0.029;
 			return 2.9;
-
 		} else if (months >= 12) {
-			// return 0.0335;
 			return 3.35;
-
 		} else if (months >= 9) {
 			return 3.35;
-			// return 0.0335;
 		} else if (months >= 6) {
-			// return 0.034;
 			return 3.4;
-
 		} else if (months >= 3) {
-			// return 0.0335;
 			return 3.35;
 		} else {
-			// return 0.03;
 			return 3;
 		}
 	}

@@ -56,6 +56,58 @@ public class AccountManager {
 		return null;
 	}
 
+	public void startBankManagement() throws
+		WithdrawNotAllowedException {
+		System.out.println("OneHanaBank에 오신 것을 환영합니다.");
+		while (true) {
+			Account account = selectAccount();
+			if (account == null) {
+				System.out.println("금일 OneHanaBank는 업무를 종료합니다. 감사합니다.");
+				break;
+			}
+			executeBankManager(account);
+		}
+	}
+
+	private void executeBankManager(Account account) throws
+		WithdrawNotAllowedException {
+		Collections.sort(this.accounts);
+		account.showInfo();
+		while (true) {
+			String choice = account.selectMenu();
+			if (choice.isEmpty() || choice.equals("0")) {
+				break;
+			}
+			switch (choice) {
+				case "+" -> {
+					if (account instanceof FixedDepositAccount) {
+						if (executeMaturity((FixedDepositAccount)account)) {
+							return;
+						}
+					} else {
+						account.deposit(0);
+					}
+				}
+				case "-" -> {
+					try {
+						account.withdraw(0);
+					} catch (InsufficientBalanceException e) {
+						System.out.println(e.getMessage());
+					}
+				}
+				case "T", "t" -> {
+					account.transfer(accounts);
+				}
+				case "I", "i" -> {
+					account.showInfo();
+				}
+				default -> {
+					System.out.println("잘못된 요청입니다.");
+				}
+			}
+		}
+	}
+
 	public boolean executeMaturity(FixedDepositAccount account) {
 		while (true) {
 			try {
@@ -96,7 +148,6 @@ public class AccountManager {
 							System.out.println("올바른 계좌번호를 입력해주세요");
 						}
 					}
-					// int toAccount = scanner.scanInt("어디로 보낼까요? 계좌 번호를 입력해주세요(" + toAccountList + "): ");
 				} else if (!check.equalsIgnoreCase("n")) {
 					System.out.println("잘못된 입력입니다. 예치 개월수부터 다시 입력해주세요.");
 				}
@@ -107,66 +158,8 @@ public class AccountManager {
 		return false;
 	}
 
-	public void startBankManagement() throws
-		WithdrawNotAllowedException,
-		InsufficientBalanceException,
-		TransferNotAllowedException {
-		System.out.println("OneHanaBank에 오신 것을 환영합니다.");
-		while (true) {
-			Account account = selectAccount();
-			if (account == null) {
-				System.out.println("금일 OneHanaBank는 업무를 종료합니다. 감사합니다.");
-				break;
-			}
-			executeBankManager(account);
-		}
-	}
-
-	private void executeBankManager(Account account) throws
-		WithdrawNotAllowedException,
-		InsufficientBalanceException,
-		TransferNotAllowedException {
-		Collections.sort(this.accounts);
-		account.showInfo();
-		while (true) {
-			String choice = account.selectMenu();
-			if (choice.isEmpty() || choice.equals("0")) {
-				break;
-			}
-			switch (choice) {
-				case "+" -> {
-					if (account instanceof FixedDepositAccount) {
-						if (executeMaturity((FixedDepositAccount)account)) {
-							return;
-						}
-					} else {
-						account.deposit(0);
-					}
-				}
-				case "-" -> {
-					try {
-						account.withdraw(0);
-					} catch (InsufficientBalanceException e) {
-						System.out.println(e.getMessage());
-					}
-				}
-				case "T", "t" -> {
-					account.transfer(accounts);
-				}
-				case "I", "i" -> {
-					account.showInfo();
-				}
-				default -> {
-					System.out.println("잘못된 요청입니다.");
-				}
-			}
-		}
-	}
-
 	public static void main(String[] args) throws
-		WithdrawNotAllowedException,
-		InsufficientBalanceException,
-		TransferNotAllowedException {
+		WithdrawNotAllowedException {
 		AccountManager accountManagerManager = new AccountManager();
 
 		accountManagerManager.accounts.add(new SavingAccount(1, "홍길동", 0));
