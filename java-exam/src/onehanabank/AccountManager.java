@@ -55,7 +55,7 @@ public class AccountManager {
 		}
 	}
 
-	private void executeBankManager(Account account) throws
+	public void executeBankManager(Account account) throws
 		WithdrawNotAllowedException {
 		Collections.sort(this.accounts);
 		account.showInfo();

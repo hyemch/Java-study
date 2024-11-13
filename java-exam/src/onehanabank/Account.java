@@ -1,5 +1,7 @@
 package onehanabank;
 
+import static onehanabank.AccountFinder.*;
+
 import java.util.ArrayList;
 
 import onehanabank.myexception.InsufficientBalanceException;
@@ -10,7 +12,7 @@ public abstract class Account implements Comparable<Account> {
 	MyScanner scanner = new MyScanner();
 	private final int accountNo;
 	private final String accountName;
-	private String name;
+	private final String name;
 	private double balance;
 
 	public int getAccountNo() {
@@ -23,10 +25,6 @@ public abstract class Account implements Comparable<Account> {
 
 	public String getName() {
 		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
 	}
 
 	public double getBalance() {
@@ -85,19 +83,8 @@ public abstract class Account implements Comparable<Account> {
 		}
 	}
 
-	public StringBuilder getToAccountList(ArrayList<Account> accounts) {
-		StringBuilder toAccountList = new StringBuilder();
-		for (Account value : accounts) {
-			if (value.accountNo == accountNo) {
-				continue;
-			}
-			toAccountList.append(value).append(" ");
-		}
-		return toAccountList;
-	}
-
 	public void transfer(ArrayList<Account> accounts) throws WithdrawNotAllowedException {
-		StringBuilder toAccountList = getToAccountList(accounts);
+		StringBuilder toAccountList = getToAccountList(getAccountNo(), accounts);
 		while (true) {
 			try {
 				String inputToAccount = scanner.scanLine("어디로 보낼까요? 계좌 번호를 입력해주세요( " + toAccountList + "):"

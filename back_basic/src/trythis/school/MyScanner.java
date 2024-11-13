@@ -1,4 +1,4 @@
-package LibraryManagement;
+package trythis.school;
 
 import java.io.InputStream;
 import java.util.Scanner;
@@ -38,4 +38,9 @@ public class MyScanner {
 		this.scanner.close();
 	}
 
+	public static void main(String[] args) {
+		MyScanner myscan = new MyScanner();
+		int intr = myscan.scanInt("xxx: ");
+		System.out.println("intr = " + intr);
+	}
 }
