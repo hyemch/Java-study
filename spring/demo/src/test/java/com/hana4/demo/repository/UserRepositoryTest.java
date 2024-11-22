@@ -1,6 +1,6 @@
 package com.hana4.demo.repository;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
@@ -27,6 +27,11 @@ public class UserRepositoryTest {
 		assertEquals(2, newUserId);
 
 		Optional<User> newer = repository.findById(newUserId);
+		assertThat(newer.isPresent()).isTrue();
+		// newer.ifPresent(a -> assertThat(a).isEqualTo(user));
+		assertThat(newer.get()).isEqualTo(user);
+		// assertThat(newer).isEqualTo(repository.findById(newUserId));
+
 		newer.ifPresent(a -> assertThat(a).isEqualTo(user));
 
 		final List<User> allUsers = repository.findAll();
