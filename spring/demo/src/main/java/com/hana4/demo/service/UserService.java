@@ -3,12 +3,10 @@ package com.hana4.demo.service;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.stereotype.Service;
-
 import com.hana4.demo.domain.User;
 import com.hana4.demo.repository.UserRepository;
 
-@Service
+// @Service
 public class UserService {
 	private final UserRepository repository;
 

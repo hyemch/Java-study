@@ -7,11 +7,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import org.springframework.stereotype.Repository;
-
 import com.hana4.demo.domain.User;
 
-@Repository
+// @Repository
 public class VolatileUserRepository implements UserRepository {
 	final Map<Long, User> users = new HashMap<>();
 
