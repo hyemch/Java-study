@@ -8,4 +8,9 @@
     <meta charset="UTF-8">
     <title>Cust Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        a:hover {
+            color: lightskyblue;
+        }
+    </style>
 </head>
