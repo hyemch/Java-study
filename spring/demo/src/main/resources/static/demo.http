@@ -33,3 +33,27 @@ Content-Type: application/json
 
 ### delete
 DELETE http://localhost:8080/users/1
+
+### get a user list
+GET http://localhost:8080/api/users
+Accept: application/json
+
+### regist
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "name": "세종대왕",
+  "age": 53
+}
+
+### get a user
+GET http://localhost:8080/api/users/10
+
+### update user
+PATCH http://localhost:8080/api/users/10
+Content-Type: application/json
+
+{
+  "name": "New"
+}
