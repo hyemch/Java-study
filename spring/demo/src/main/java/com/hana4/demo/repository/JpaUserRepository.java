@@ -18,6 +18,7 @@ public class JpaUserRepository implements UserRepository {
 
 	@Override
 	public List<User> findAll() {
+		//jpql : entitiy 직접준다.
 		return em.createQuery("select u from User u", User.class).getResultList();
 	}
 
@@ -61,5 +62,7 @@ public class JpaUserRepository implements UserRepository {
 	}
 
 	public void initialize() {
+		String truncSql = "truncate table DemoUser";
+		em.createNativeQuery(truncSql).executeUpdate();
 	}
 }
