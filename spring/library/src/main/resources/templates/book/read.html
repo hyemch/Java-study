@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>도서 상세 보기</title>
+    <link rel="stylesheet" href="/css/style.css">
+
+<!--    <style>-->
+<!--        body {-->
+<!--            /*font-family: Arial, sans-serif;*/-->
+<!--            margin: 20px;-->
+<!--            background-color: #f4f4f4;-->
+<!--        }-->
+<!--        h1 {-->
+<!--            color: #333;-->
+<!--        }-->
+<!--        .book-info {-->
+<!--            background: white;-->
+<!--            border-radius: 8px;-->
+<!--            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);-->
+<!--            padding: 15px;-->
+<!--            margin-top: 20px;-->
+<!--        }-->
+<!--        .availability {-->
+<!--            font-weight: bold;-->
+<!--        }-->
+<!--        .available {-->
+<!--            color: green;-->
+<!--        }-->
+<!--        .unavailable {-->
+<!--            color: red;-->
+<!--        }-->
+<!--        .borrow-form {-->
+<!--            margin-top: 20px;-->
+<!--        }-->
+<!--        .back-link {-->
+<!--            margin-top: 20px;-->
+<!--            display: inline-block;-->
+<!--        }-->
+<!--    </style>-->
+</head>
+<body>
+
+<h1 th:text="#{title.bookDetail}">도서 상세 보기</h1>
+
+
+<!-- 도서 정보 출력 -->
+<div class="book-info">
+    <p><strong th:text="#{label.title}">도서명</strong> <span th:text="${book.title}"></span></p>
+    <p><strong th:text="#{label.author}">저자</strong> <span th:text="${book.author}"></span></p>
+    <p><strong th:text="#{label.publisher}">출판사</strong> <span th:text="${book.publisher}"></span></p>
+    <p><strong th:text="#{label.description}">설명</strong> <span th:text="${book.description}"></span></p>
+    <p><strong th:text="#{label.isbn}">ISBN</strong> <span th:text="${book.isbn}"></span></p>
+
+    <!-- 대출 가능 여부 -->
+    <p><strong th:text="#{label.availability}">대출 가능 여부:</strong>
+        <span class="availability" th:text="${book.availability ? 'O' : 'X'}"
+              th:class="${book.availability ? 'available' : 'unavailable'}"></span>
+    </p>
+
+    <!-- 대출 신청 폼 -->
+    <form th:if="${book.availability == true}" class="borrow-form" th:action="@{/book/borrow}" method="post">
+        <input type="hidden" name="bno" th:value="${book.bno}" />
+            <strong th:text="#{label.borrower}">신청자</strong>
+        <label>
+            <input type="text" name="borrowerId" th:placeholder="#{label.borrowerId}" required/>
+        </label>
+        <button type="submit" th:text="#{button.borrow}">대출 신청</button>
+    </form>
+
+    <!-- 대출 불가 메시지 -->
+    <p th:if="${book.availability == false}" th:text="#{label.availabilityFalse}">대출 불가 상태입니다.</p>
+</div>
+
+<!-- 목록으로 돌아가기 -->
+<a class="back-link" href="/book/list" th:text="#{button.backToList}">목록으로 돌아가기</a>
+
+</body>
+</html>
+
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org" lang="ko">-->
+<!--<head>-->
+<!--    <title>도서 상세 보기</title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<h1>도서 상세 보기</h1>-->
+
+<!--&lt;!&ndash; 도서 정보 출력 &ndash;&gt;-->
+<!--<p><strong>도서명:</strong> <span th:text="${book.title}"></span></p>-->
+<!--<p><strong>저자:</strong> <span th:text="${book.author}"></span></p>-->
+<!--<p><strong>출판사:</strong> <span th:text="${book.publisher}"></span></p>-->
+<!--<p><strong>설명:</strong> <span th:text="${book.description}"></span></p>-->
+<!--<p><strong>ISBN:</strong> <span th:text="${book.isbn}"></span></p>-->
+
+<!--&lt;!&ndash; 대출 가능 여부 &ndash;&gt;-->
+<!--<p><strong>대출 가능:</strong>-->
+<!--    <span th:text="${book.availability ? '가능' : '불가능'}"></span>-->
+<!--</p>-->
+
+<!--&lt;!&ndash; 대출 신청 폼 &ndash;&gt;-->
+<!--<form th:if="${book.availability == true}" th:action="@{/book/borrow}" method="post">-->
+<!--    <input type="hidden" name="bno" th:value="${book.bno}" />-->
+<!--    <label>-->
+<!--        신청자 이름:-->
+<!--        <input type="text" name="borrowerId" placeholder="신청자 이름" required/>-->
+<!--    </label>-->
+<!--    <button type="submit">대출 신청</button>-->
+<!--</form>-->
+
+<!--&lt;!&ndash; 대출 불가 메시지 &ndash;&gt;-->
+<!--<p th:if="${book.availability == false }">대출 불가 상태입니다.</p>-->
+
+<!--&lt;!&ndash; 목록으로 돌아가기 &ndash;&gt;-->
+<!--<a href="/book/list">목록으로 돌아가기</a>-->
+
+<!--</body>-->
+<!--</html>-->

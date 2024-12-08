@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="#{title.bookList}">도서 목록</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<h1 th:text="#{title.bookList}">보유 도서 목록</h1>
+
+<div th:replace="~{head :: language-select}"></div>
+
+<table>
+    <thead>
+    <tr>
+        <th th:text="#{label.title}">도서명</th>
+        <th th:text="#{label.author}">저자</th>
+        <th th:text="#{label.publisher}">출판사</th>
+        <th th:text="#{label.isbn}">ISBN</th>
+        <th th:text="#{label.availability}">대출 가능 여부</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="book : ${books}">
+        <td><a th:href="@{/book/read(bno=${book.bno})}" th:text="${book.title}"></a></td>
+        <td th:text="${book.author}"></td>
+        <td th:text="${book.publisher}"></td>
+        <td th:text="${book.isbn}"></td>
+        <td class="availability" th:class="${book.availability ? 'available' : 'unavailable'}"
+            th:text="${book.availability ? 'O' : 'X'}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org" lang="ko">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title th:text="#{title.bookList}">도서 목록</title>-->
+<!--    <style>-->
+<!--        body {-->
+<!--            font-family: Arial, sans-serif;-->
+<!--            margin: 20px;-->
+<!--            background-color: #f4f4f4;-->
+<!--        }-->
+<!--        h1 {-->
+<!--            color: #333;-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+<!--        .language-select {-->
+<!--            margin-bottom: 20px;-->
+<!--        }-->
+<!--        table {-->
+<!--            width: 100%;-->
+<!--            border-collapse: collapse;-->
+<!--            margin-bottom: 20px;-->
+<!--            background: white;-->
+<!--            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);-->
+<!--        }-->
+<!--        th, td {-->
+<!--            padding: 12px;-->
+<!--            text-align: left;-->
+<!--            border-bottom: 1px solid #ddd;-->
+<!--        }-->
+<!--        th {-->
+<!--            background-color: #f2f2f2;-->
+<!--            color: #333;-->
+<!--        }-->
+<!--        tr:hover {-->
+<!--            background-color: #f1f1f1;-->
+<!--        }-->
+<!--        .availability {-->
+<!--            font-weight: bold;-->
+<!--        }-->
+<!--        .availability.available {-->
+<!--            color: green;-->
+<!--        }-->
+<!--        .availability.unavailable {-->
+<!--            color: red;-->
+<!--        }-->
+<!--    </style>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1 th:text="#{title.bookList}">보유 도서 목록</h1>-->
+
+<!--<form method="get" th:action="@{/book/list}" class="language-select">-->
+<!--    <label for="language" th:text="#{message.language}"></label>-->
+<!--    <select name="lang" id="language">-->
+<!--        <option value="" selected th:text="#{message.language}"></option>-->
+<!--        <option value="ko" th:text="#{message.language.korean}"></option>-->
+<!--        <option value="en" th:text="#{message.language.english}"></option>-->
+<!--    </select>-->
+<!--    <button type="submit" th:text="#{button.applyLanguage}"></button>-->
+<!--</form>-->
+
+<!--<table>-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--        <th th:text="#{label.title}">도서명</th>-->
+<!--        <th th:text="#{label.author}">저자</th>-->
+<!--        <th th:text="#{label.publisher}">출판사</th>-->
+<!--        <th th:text="#{label.isbn}">ISBN</th>-->
+<!--        <th th:text="#{label.availability}">대출 가능 여부</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    &lt;!&ndash; 도서 목록 반복 출력 &ndash;&gt;-->
+<!--    <tr th:each="book : ${books}">-->
+<!--        <td><a th:href="@{/book/read(bno=${book.bno})}" th:text="${book.title}"></a></td>-->
+<!--        <td th:text="${book.author}"></td>-->
+<!--        <td th:text="${book.publisher}"></td>-->
+<!--        <td th:text="${book.isbn}"></td>-->
+<!--        <td class="availability" th:class="${book.availability ? 'available' : 'unavailable'}"-->
+<!--            th:text="${book.availability ? 'O' : 'X'}"></td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--</table>-->
+
+<!--</body>-->
+<!--</html>-->
+
+<!--<!DOCTYPE html>-->
+<!--<html xmlns:th="http://www.thymeleaf.org" lang="ko">-->
+<!--<head>-->
+<!--    <title th:text="#{title.bookList}">도서 목록</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1 th:text="#{title.bookList}">보유 도서 목록</h1>-->
+
+<!--<form method="get" th:action="@{/book/list}">-->
+<!--    <label for="language" th:text="#{message.language}"></label>-->
+<!--    <select name="lang" id="language">-->
+<!--        <option value="ko" th:text="#{message.language.korean}"></option>-->
+<!--        <option value="en" th:text="#{message.language.english}"></option>-->
+<!--    </select>-->
+<!--    <button type="submit" th:text="#{button.applyLanguage}"></button>-->
+<!--</form>-->
+
+<!--<table border="1">-->
+<!--    <thead>-->
+<!--    <tr>-->
+<!--        <th th:text="#{label.title}">도서명</th>-->
+<!--        <th th:text="#{label.author}">저자</th>-->
+<!--        <th th:text="#{label.publisher}">출판사</th>-->
+<!--        <th th:text="#{label.isbn}">ISBN</th>-->
+<!--        <th th:text="#{label.availability}">대출 가능 여부</th>-->
+<!--    </tr>-->
+<!--    </thead>-->
+<!--    <tbody>-->
+<!--    &lt;!&ndash; 도서 목록 반복 출력 &ndash;&gt;-->
+<!--    <tr th:each="book : ${books}">-->
+<!--        <td><a th:href="@{/book/read(bno=${book.bno})}" th:text="${book.title}"></a></td>-->
+<!--        <td th:text="${book.author}"></td>-->
+<!--        <td th:text="${book.publisher}"></td>-->
+<!--        <td th:text="${book.isbn}"></td>-->
+<!--        <td th:text="${book.availability ? 'O' : 'X'}"></td>-->
+<!--    </tr>-->
+<!--    </tbody>-->
+<!--</table>-->
+
+<!--</body>-->
+<!--</html>-->
