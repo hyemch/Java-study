@@ -1,6 +1,7 @@
 package com.hana4.board.controller;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,38 +23,46 @@ import lombok.RequiredArgsConstructor;
 public class CommentController {
 	private final CommentService commentService;
 
-	@PostMapping
-	public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO commentDTO) {
-		return ResponseEntity.ok(commentService.createComment(commentDTO));
-	}
-
+	//목록
 	@GetMapping
 	public ResponseEntity<List<CommentDTO>> getAllComments() {
 		return ResponseEntity.ok(commentService.getAllComments());
 	}
 
-	@GetMapping("{id}")
-	public ResponseEntity<CommentDTO> getComment(@PathVariable Long id) {
-		return ResponseEntity.ok(commentService.getCommentById(id));
+	//쓰기
+	@PostMapping
+	public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO commentDTO) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(commentDTO));
 	}
 
+	//수정
 	@PatchMapping("/{id}")
 	public ResponseEntity<CommentDTO> updateComment(@PathVariable Long id, @RequestBody CommentDTO commentDTO) {
 		return ResponseEntity.ok(commentService.updateComment(commentDTO, id));
 	}
 
+	//삭제
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
 		commentService.deleteComment(id);
 		return ResponseEntity.noContent().build();
 	}
 
-	@GetMapping("/{postId}")
+	//--------------------------------------------------
+	//댓글 상세
+	@GetMapping("/{id}")
+	public ResponseEntity<CommentDTO> getComment(@PathVariable Long id) {
+		return ResponseEntity.ok(commentService.getCommentById(id));
+	}
+
+	//포스트별 댓글
+	@GetMapping("/{postId}/comments")
 	public ResponseEntity<List<CommentDTO>> getCommentsByPostId(@PathVariable Long postId) {
 		return ResponseEntity.ok(commentService.getCommentsByPostId(postId));
 	}
 
-	@GetMapping("/{writerId}")
+	//사용자별 댓글
+	@GetMapping("/{writerId}/comments")
 	public ResponseEntity<List<CommentDTO>> getCommentsByWriterId(@PathVariable String writerId) {
 		return ResponseEntity.ok(commentService.getCommentsByUserId(writerId));
 	}

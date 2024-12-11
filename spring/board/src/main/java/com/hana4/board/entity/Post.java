@@ -2,6 +2,10 @@ package com.hana4.board.entity;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -27,10 +31,14 @@ public class Post {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	@CreationTimestamp
+	@Column(nullable = false, updatable = false, columnDefinition = "timestamp")
+	@ColumnDefault("CURRENT_TIMESTAMP")
 	private LocalDateTime createAt;
 
-	@Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
+	@UpdateTimestamp
+	@Column(nullable = false, columnDefinition = "timestamp")
+	@ColumnDefault("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
 	private LocalDateTime updateAt;
 
 	@Column(length = 255, nullable = false)
@@ -38,19 +46,9 @@ public class Post {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "writer", nullable = false)
-	// @Column(length = 36, nullable = false)
 	private User writer;
 
 	@Column(columnDefinition = "TEXT", nullable = false)
-
 	private String body;
 
-	// public Post(Long id, LocalDateTime createAt, LocalDateTime updateAt, String title, User writer, String body) {
-	// 	this.id = id;
-	// 	this.createAt = LocalDateTime.now();
-	// 	this.updateAt = LocalDateTime.now();
-	// 	this.title = title;
-	// 	this.writer = writer;
-	// 	this.body = body;
-	// }
 }

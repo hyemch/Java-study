@@ -2,6 +2,7 @@ package com.hana4.board.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -24,11 +25,30 @@ public class CommentService {
 	private final UserRepository userRepository;
 
 	public CommentDTO createComment(CommentDTO dto) {
-		User writer = userRepository.findById(dto.getWriter()).orElseThrow(() -> new IllegalArgumentException("User not found"));
+		User writer = userRepository.findById(dto.getWriter()).orElseThrow(() -> new IllegalArgumentException("User "
+			+ "dose not exist"));
+		System.out.println("@@@@@@@@@@@@@@@@@@@@@PostId = " + dto.getPost());
 		Post post = postRepository.findById(dto.getPost()).orElseThrow(() -> new IllegalArgumentException("Post not found"));
 		Comment comment = CommentMapper.toEntity(dto, post, writer);
 		Comment savedComment = commentRepository.save(comment);
 		return CommentMapper.toDTO(savedComment);
+	}
+
+	public List<CommentDTO> getAllComments() {
+		return commentRepository.findAll().stream().map(CommentMapper::toDTO).collect(Collectors.toList());
+	}
+
+	public CommentDTO updateComment(CommentDTO dto, Long commentId) {
+		Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("Comment not found"));
+
+		comment.setBody(dto.getBody());
+		comment.setUpdateAt(LocalDateTime.now());
+		return CommentMapper.toDTO(commentRepository.save(comment));
+	}
+
+	public void deleteComment(Long commentId) {
+		Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("Comment not found"));
+		commentRepository.delete(comment);
 	}
 
 	public CommentDTO getCommentById(Long commentId) {
@@ -48,25 +68,5 @@ public class CommentService {
 		User writer = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
 
 		return commentRepository.findByWriterId(writer.getId()).stream().map(CommentMapper::toDTO).toList();
-
 	}
-
-	public List<CommentDTO> getAllComments() {
-		return commentRepository.findAll().stream().map(CommentMapper::toDTO).toList();
-	}
-
-	public CommentDTO updateComment(CommentDTO dto, Long commentId) {
-		Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("Comment not found"));
-
-		comment.setBody(dto.getBody());
-		comment.setUpdateAt(LocalDateTime.now());
-		return CommentMapper.toDTO(commentRepository.save(comment));
-	}
-
-	public void deleteComment(Long commentId) {
-		Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("Comment not found"));
-		commentRepository.delete(comment);
-	}
-
-
 }

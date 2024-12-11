@@ -32,12 +32,10 @@ public class Comment {
 	private Long id;
 
 	@CreationTimestamp
-	// @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
 	@Column(nullable = false, updatable = false, columnDefinition = "timestamp")
 	@ColumnDefault("CURRENT_TIMESTAMP")
 	private LocalDateTime createAt;
 
-	// @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
 	@UpdateTimestamp
 	@Column(nullable = false, columnDefinition = "timestamp")
 	@ColumnDefault("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
@@ -49,18 +47,8 @@ public class Comment {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "writer", nullable=false)
-	// @Column(length = 36, nullable = false)
 	private User writer;
 
 	@Column(length = 500, nullable = false)
 	private String body;
-
-	// public Comment(Long id, LocalDateTime createAt, LocalDateTime updateAt, Post post, User writer, String body) {
-	// 	this.id = id;
-	// 	this.createAt = createAt;
-	// 	this.updateAt = updateAt;
-	// 	this.post = post;
-	// 	this.writer = writer;
-	// 	this.body = body;
-	// }
 }

@@ -1,6 +1,5 @@
 package com.hana4.board.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +41,6 @@ public class PostService {
 
 		post.setTitle(dto.getTitle());
 		post.setBody(dto.getBody());
-		post.setUpdateAt(LocalDateTime.now());
 		return PostMapper.toDTO(postRepository.save(post));
 	}
 
@@ -51,4 +49,10 @@ public class PostService {
 		postRepository.delete(post);
 	}
 
+	public List<PostDTO> getPostsByWriterId(String writerId) {
+		User writer = userRepository.findById(writerId).orElseThrow(() -> new IllegalArgumentException("User does not "
+			+ "exist"));
+
+		return postRepository.findByWriterId(writer.getId()).stream().map(PostMapper::toDTO).toList();
+	}
 }
