@@ -18,7 +18,6 @@ import com.hana4.board.entity.User;
 import com.hana4.board.repository.PostRepository;
 import com.hana4.board.repository.UserRepository;
 
-import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 
 @SpringBootTest

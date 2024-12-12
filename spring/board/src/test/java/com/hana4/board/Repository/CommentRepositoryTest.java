@@ -38,7 +38,7 @@ public class CommentRepositoryTest {
 	private UserRepository userRepository;
 
 	private User user;
-	private List<Post> posts;;
+	private List<Post> posts;
 
 	@BeforeEach
 	void setUp() {
