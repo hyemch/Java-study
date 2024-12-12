@@ -59,12 +59,4 @@ public class BookController {
 		session.setAttribute("locale", locale);
 		return "redirect:/book/list";
 	}
-
-	// @GetMapping("/changeLanguage")
-	// public String changeLanguage(@RequestParam("lang") String lang, HttpSession session, HttpServletRequest request) {
-	// 	Locale locale = new Locale(lang);
-	// 	session.setAttribute("locale", locale);
-	// 	String referer = request.getHeader("referer");
-	// 	return "redirect:" + referer;
-	// }
 }
