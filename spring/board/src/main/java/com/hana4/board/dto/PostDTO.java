@@ -20,10 +20,4 @@ public class PostDTO {
 	private String title;
 	private String writer; //User id
 	private String body;
-
-	public PostDTO(String title, String writer, String body) {
-		this.title = title;
-		this.writer = writer;
-		this.body = body;
-	}
 }

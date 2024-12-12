@@ -1,6 +1,5 @@
 package com.hana4.board.service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,8 +28,7 @@ public class CommentService {
 			+ "dose not exist"));
 		Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
 		Comment comment = CommentMapper.toEntity(dto, post, writer);
-		Comment savedComment = commentRepository.save(comment);
-		return CommentMapper.toDTO(savedComment);
+		return CommentMapper.toDTO(commentRepository.save(comment));
 	}
 
 	public List<CommentDTO> getComments(Long postId) {
@@ -39,35 +37,19 @@ public class CommentService {
 	}
 
 	public CommentDTO updateComment(CommentDTO dto, Long postId, Long commentId) {
-		Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
+		postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
+		if (!postId.equals(dto.getPost()))
+			throw new IllegalArgumentException("Post id does not match");
 		Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("Comment not found"));
 
 		comment.setBody(dto.getBody());
-		comment.setUpdateAt(LocalDateTime.now());
 		return CommentMapper.toDTO(commentRepository.save(comment));
 	}
 
 	public void deleteComment(Long postId, Long commentId) {
+		postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
+
 		Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("Comment not found"));
 		commentRepository.delete(comment);
-	}
-
-	public CommentDTO getCommentById(Long commentId) {
-		Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("Comment not "
-			+ "found"));
-
-		return CommentMapper.toDTO(comment);
-	}
-
-	// public List<CommentDTO> getCommentsByPostId(Long postId) {
-	// 	Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
-	//
-	// 	return commentRepository.findByPostId(post.getId()).stream().map(CommentMapper::toDTO).toList();
-	// }
-
-	public List<CommentDTO> getCommentsByUserId(String userId) {
-		User writer = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-		return commentRepository.findByWriterId(writer.getId()).stream().map(CommentMapper::toDTO).toList();
 	}
 }

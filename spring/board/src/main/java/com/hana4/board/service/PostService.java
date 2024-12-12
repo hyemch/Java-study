@@ -48,11 +48,4 @@ public class PostService {
 		Post post = postRepository.findById(postId).orElseThrow(() -> new IllegalArgumentException("Post not found"));
 		postRepository.delete(post);
 	}
-
-	public List<PostDTO> getPostsByWriterId(String writerId) {
-		User writer = userRepository.findById(writerId).orElseThrow(() -> new IllegalArgumentException("User does not "
-			+ "exist"));
-
-		return postRepository.findByWriterId(writer.getId()).stream().map(PostMapper::toDTO).toList();
-	}
 }

@@ -23,48 +23,25 @@ import lombok.RequiredArgsConstructor;
 public class CommentController {
 	private final CommentService commentService;
 
-	//목록
 	@GetMapping
 	public ResponseEntity<List<CommentDTO>> getComments(@PathVariable Long postId) {
 		return ResponseEntity.ok(commentService.getComments(postId));
 	}
 
-	//쓰기
 	@PostMapping
 	public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO commentDTO, @PathVariable Long postId) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(commentDTO, postId));
 	}
 
-	//수정
 	@PatchMapping("/{id}")
 	public ResponseEntity<CommentDTO> updateComment(@PathVariable Long id, @RequestBody CommentDTO commentDTO,
 		@PathVariable Long postId) {
 		return ResponseEntity.ok(commentService.updateComment(commentDTO, postId, id));
 	}
 
-	//삭제
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> deleteComment(@PathVariable Long id, @PathVariable Long postId) {
 		commentService.deleteComment(postId, id);
 		return ResponseEntity.noContent().build();
-	}
-
-	//--------------------------------------------------
-	//댓글 상세
-	@GetMapping("/{id}")
-	public ResponseEntity<CommentDTO> getComment(@PathVariable Long id) {
-		return ResponseEntity.ok(commentService.getCommentById(id));
-	}
-
-	// //포스트별 댓글
-	// @GetMapping("/{postId}/comments")
-	// public ResponseEntity<List<CommentDTO>> getCommentsByPostId(@PathVariable Long postId) {
-	// 	return ResponseEntity.ok(commentService.getCommentsByPostId(postId));
-	// }
-
-	//사용자별 댓글
-	@GetMapping("/{writerId}/comments")
-	public ResponseEntity<List<CommentDTO>> getCommentsByWriterId(@PathVariable String writerId) {
-		return ResponseEntity.ok(commentService.getCommentsByUserId(writerId));
 	}
 }
