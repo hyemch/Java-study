@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hana4.board.dto.PostDTO;
 import com.hana4.board.entity.User;
+import com.hana4.board.repository.CommentRepository;
 import com.hana4.board.repository.PostRepository;
 import com.hana4.board.repository.UserRepository;
 import com.hana4.board.service.PostService;
@@ -46,7 +47,9 @@ public class PostControllerTest {
 
 	@BeforeAll
 	void setUp(
-		@Autowired PostRepository postRepository, @Autowired UserRepository userRepository) {
+		@Autowired CommentRepository commentRepository, @Autowired PostRepository postRepository,
+		@Autowired UserRepository userRepository) {
+		commentRepository.deleteAll();
 		postRepository.deleteAll();
 		user = userRepository.findAll().get(0);
 
