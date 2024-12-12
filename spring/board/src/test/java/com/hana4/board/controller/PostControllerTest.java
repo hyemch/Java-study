@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,11 +28,13 @@ import com.hana4.board.entity.User;
 import com.hana4.board.repository.PostRepository;
 import com.hana4.board.repository.UserRepository;
 
+import jakarta.transaction.Transactional;
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@ActiveProfiles("test")
+@Transactional
 public class PostControllerTest {
 	@Autowired
 	private MockMvc mockMvc;
@@ -48,12 +49,12 @@ public class PostControllerTest {
 	private ObjectMapper objectMapper;
 
 	private User user ;
-	private final List<PostDTO> samplePosts = new ArrayList<>();
+	private List<PostDTO> samplePosts;
 
 	@BeforeEach
 	void setUp() {
-		samplePosts.clear();
 		postRepository.deleteAll();
+		samplePosts = new ArrayList<>();
 		user = userRepository.findAll().get(0);
 		for (int i = 1; i <= 3; i++) {
 			PostDTO postDTO = new PostDTO("Post title" + i, user.getId(), "Post body" + i);

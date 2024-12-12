@@ -6,12 +6,12 @@ import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.stereotype.Component;
 
 import com.hana4.board.entity.User;
 import com.hana4.board.repository.UserRepository;
 
 @Configuration
-@Profile("test")
 public class IntiDataLoader implements ApplicationRunner {
 	UserRepository userRepository;
 

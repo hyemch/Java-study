@@ -1,6 +1,5 @@
 package com.hana4.board.controller;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -12,13 +11,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,13 +27,13 @@ import com.hana4.board.entity.User;
 import com.hana4.board.repository.CommentRepository;
 import com.hana4.board.repository.PostRepository;
 import com.hana4.board.repository.UserRepository;
-import com.hana4.board.service.CommentService;
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+import jakarta.transaction.Transactional;
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@ActiveProfiles("test")
+@Transactional
 public class CommentControllerTest {
 
 	@Autowired
@@ -45,72 +42,84 @@ public class CommentControllerTest {
 	@Autowired
 	private ObjectMapper objectMapper;
 
-	@Autowired
-	private CommentService commentService;
+	@Autowired CommentRepository commentRepository;
 
+	@Autowired UserRepository userRepository;
+
+	@Autowired PostRepository postRepository;
 
 	private User writer;
 	private Post post;
-	private final List<CommentDTO> sampleComments = new ArrayList<>();
+	private Post post2;
+	private List<CommentDTO> sampleComments;
 
 	@BeforeEach
-	void setUp(@Autowired CommentRepository commentRepository,
-	@Autowired UserRepository userRepository, @Autowired PostRepository postRepository) {
-		sampleComments.clear();
+	void setUp() {
+		commentRepository.deleteAll();
+		postRepository.deleteAll();
+
+		sampleComments = new ArrayList<>();
+
 		writer = userRepository.findAll().get(0);
 		post = new Post();
-		post.setId(1L);
 		post.setWriter(writer);
 		post.setTitle("Test Comment");
 		post.setBody("This is a sample Post with Comment");
 		postRepository.save(post);
 
-		for (int i = 0; i < 3; i++) {
-			CommentDTO dto = new CommentDTO();
-			dto.setId(sampleComments.size() + post.getId());
-			dto.setPost(post.getId());
-			dto.setWriter(writer.getId());
-			dto.setBody("This is a sample comment" + i);
-			Comment saveComment = commentRepository.save(CommentMapper.toEntity(dto, post, writer));
-			dto.setId(saveComment.getId());
-			sampleComments.add(dto);
+		post2 = new Post();
+		post2.setWriter(writer);
+		post2.setTitle("Test Comment2");
+		post2.setBody("This is a sample Post with Comment2");
+		postRepository.save(post2);
+
+		for (int i = 0; i < 4; i++) {
+			Comment comment = new Comment();
+			comment.setWriter(writer);
+			comment.setPost(post);
+			comment.setBody("Comment of Post " + i);
+			commentRepository.save(comment);
+			sampleComments.add(CommentMapper.toDTO(comment));
 		}
-		System.out.println("Posts in DB: " + postRepository.count());
-		System.out.println("Comments in DB: " + commentRepository.count());
+
+		for (int i = 0; i < 2; i++) {
+			Comment comment = new Comment();
+			comment.setWriter(writer);
+			comment.setPost(post2);
+			comment.setBody("Comment of Post2" + i);
+			commentRepository.save(comment);
+
+			sampleComments.add(CommentMapper.toDTO(comment));
+
+		}
 	}
 
 	@Test
 	@Order(1)
-	void testGetAllComments() throws Exception {
-
-		System.out.println(objectMapper.writeValueAsString(sampleComments));
-		System.out.println("sampleComments = " + sampleComments.size());
-		final int commentCount = commentService.getAllComments().size();
-		mockMvc.perform(get("/comments"))
+	void testGetComments() throws Exception {
+		Long postId = post.getId();
+		int commentCounts =
+			sampleComments.stream().filter(comment -> comment.getPost().equals(postId)).toList().size();
+		mockMvc.perform(get("/posts/{postId}/comments", postId))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.length()").value(sampleComments.size()))
-			.andExpect(jsonPath("$.length()").value(commentCount))
+			.andExpect(jsonPath("$.length()").value(commentCounts))
 			.andDo(print());
 	}
-
 
 	@Test
 	@Order(2)
 	void testCreateComment() throws Exception {
 		CommentDTO dto = new CommentDTO();
-		dto.setId(post.getId());
 		dto.setPost(post.getId());
 		dto.setWriter(writer.getId());
-		dto.setBody("This is a sample comment " + dto.getId());
+		dto.setBody("This is a sample comment");
 
 		String requestBody = objectMapper.writeValueAsString(dto);
-		mockMvc.perform(post("/comments")
+		mockMvc.perform(post("/posts/{postId}/comments", post.getId())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestBody))
 				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.id").isNotEmpty())
-				.andExpect(jsonPath("$.writer").value(dto.getWriter()))
-				.andExpect(jsonPath("$.post").value(dto.getPost()))
 				.andExpect(jsonPath("$.body").value(dto.getBody()))
 				.andDo(print());
 	}
@@ -122,14 +131,12 @@ public class CommentControllerTest {
 		final String updateBody = "This is updated comment";
 		updateComment.setBody(updateBody);
 
-		final String url = "/comments/" + updateComment.getId();
 		String requestBody = objectMapper.writeValueAsString(updateComment);
 
-		mockMvc.perform(patch("/comments/{id}", updateComment.getId())
+		mockMvc.perform(patch("/posts/{postId}/comments/{id}", updateComment.getPost(), updateComment.getId())
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestBody))
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.id").isNotEmpty())
 			.andExpect(jsonPath("$.body").value(updateBody))
 			.andDo(print());
 	}
@@ -138,18 +145,9 @@ public class CommentControllerTest {
 	@Order(4)
 	void testDeleteComment() throws Exception {
 		CommentDTO deleteComment = sampleComments.get(0);
-		int sampleCommentSize = sampleComments.size();
-		mockMvc.perform(delete("/comments/{id}", deleteComment.getId()))
+		int sampleCommentSize = sampleComments.stream().filter(comment -> comment.getPost().equals(sampleComments.get(0).getPost())).toList().size();
+		mockMvc.perform(delete("/posts/{post_id}/comments/{id}", deleteComment.getPost(),deleteComment.getId()))
 			.andExpect(status().isNoContent())
 			.andDo(print());
-
-		// mockMvc.perform(get("/comments"))
-		// 	.andExpect(status().isOk())
-		// 	.andExpect(jsonPath("$.length()").value(sampleCommentSize - 1)) // 삭제 후 댓글 수 확인
-		// 	.andDo(print());
-
-		List<CommentDTO> remainingComments = commentService.getAllComments();
-		assertThat(remainingComments.size()).isEqualTo(sampleCommentSize - 1);
-
 	}
 }

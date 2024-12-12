@@ -44,7 +44,7 @@ public class Post {
 	@Column(length = 255, nullable = false)
 	private String title;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "writer", nullable = false)
 	private User writer;
 

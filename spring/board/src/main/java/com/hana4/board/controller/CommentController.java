@@ -18,33 +18,34 @@ import com.hana4.board.service.CommentService;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/comments")
+@RequestMapping("/posts/{postId}/comments")
 @RequiredArgsConstructor
 public class CommentController {
 	private final CommentService commentService;
 
 	//목록
 	@GetMapping
-	public ResponseEntity<List<CommentDTO>> getAllComments() {
-		return ResponseEntity.ok(commentService.getAllComments());
+	public ResponseEntity<List<CommentDTO>> getComments(@PathVariable Long postId) {
+		return ResponseEntity.ok(commentService.getComments(postId));
 	}
 
 	//쓰기
 	@PostMapping
-	public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO commentDTO) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(commentDTO));
+	public ResponseEntity<CommentDTO> createComment(@RequestBody CommentDTO commentDTO, @PathVariable Long postId) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(commentService.createComment(commentDTO, postId));
 	}
 
 	//수정
 	@PatchMapping("/{id}")
-	public ResponseEntity<CommentDTO> updateComment(@PathVariable Long id, @RequestBody CommentDTO commentDTO) {
-		return ResponseEntity.ok(commentService.updateComment(commentDTO, id));
+	public ResponseEntity<CommentDTO> updateComment(@PathVariable Long id, @RequestBody CommentDTO commentDTO,
+		@PathVariable Long postId) {
+		return ResponseEntity.ok(commentService.updateComment(commentDTO, postId, id));
 	}
 
 	//삭제
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> deleteComment(@PathVariable Long id) {
-		commentService.deleteComment(id);
+	public ResponseEntity<Void> deleteComment(@PathVariable Long id, @PathVariable Long postId) {
+		commentService.deleteComment(postId, id);
 		return ResponseEntity.noContent().build();
 	}
 
@@ -55,11 +56,11 @@ public class CommentController {
 		return ResponseEntity.ok(commentService.getCommentById(id));
 	}
 
-	//포스트별 댓글
-	@GetMapping("/{postId}/comments")
-	public ResponseEntity<List<CommentDTO>> getCommentsByPostId(@PathVariable Long postId) {
-		return ResponseEntity.ok(commentService.getCommentsByPostId(postId));
-	}
+	// //포스트별 댓글
+	// @GetMapping("/{postId}/comments")
+	// public ResponseEntity<List<CommentDTO>> getCommentsByPostId(@PathVariable Long postId) {
+	// 	return ResponseEntity.ok(commentService.getCommentsByPostId(postId));
+	// }
 
 	//사용자별 댓글
 	@GetMapping("/{writerId}/comments")
