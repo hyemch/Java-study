@@ -1,5 +1,7 @@
 package com.hana4.board.entity;
 
+import org.hibernate.annotations.Comment;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -17,6 +19,7 @@ import lombok.Setter;
 public class User {
 	@Id
 	@Column(length = 36, nullable = false)
+	@Comment("UUID로 Generate")
 	private String id;
 
 	@Column(length = 31, nullable = false, unique = true)
