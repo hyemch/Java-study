@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.coyote.BadRequestException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -71,22 +72,36 @@ public class UserController {
 
 	@GetMapping("/{id}")
 	@ResponseBody
-	public User getUser(@PathVariable("id") Long id) throws IOException {
+	public ResponseEntity<?> getUser(@PathVariable("id") Long id) {
 		Optional<User> user = service.getUser(id);
-		System.out.println("user = " + user);
-		if (user.isPresent()) {
-			return user.get();
-		} else {
-			res.sendError(404, "User not found!");
-			// throw new BadRequestException("User not found!"); BadRequest
-			return null;
-		}
+		// if (user.isPresent()) {
+		// return ResponseEntity.ok(user.get());
+		return ResponseEntity.of(user);
+		// return ResponseEntity.ofNullable(user);
+		// } else {
+		// return ResponseEntity.status(404).body("Not Found");
+		// }
 	}
 
-	private void checkExists(Long id, HttpServletResponse response) throws IOException {
-		if (service.getUser(id).isEmpty()) {
+	// public User getUser(@PathVariable("id") Long id) throws IOException {
+	// 	Optional<User> user = service.getUser(id);
+	// 	System.out.println("user = " + user);
+	// 	if (user.isPresent()) {
+	// 		return user.get();
+	// 	} else {
+	// 		res.sendError(404, "User not found!");
+	// 		// throw new BadRequestException("User not found!"); BadRequest
+	// 		return null;
+	// 	}
+	// }
+
+	private User checkExists(Long id, HttpServletResponse response) throws IOException {
+		Optional<User> user = service.getUser(id);
+		if (user.isEmpty()) {
 			response.sendError(404, "User not found!");
+			return null;
 		}
+		return user.get();
 	}
 
 	// @PatchMapping("/users/{id}")
@@ -94,9 +109,12 @@ public class UserController {
 	@ResponseBody
 	public User updateUser(@RequestBody User user, @PathVariable("id") Long id) throws IOException {
 		user.setId(id);
-		checkExists(user.getId(), res);
 		System.out.println("user = " + user);
-		return service.updateUser(user);
+		User attachedUser = checkExists(user.getId(), res);
+		assert attachedUser != null;
+		attachedUser.setName(user.getName());
+
+		return service.updateUser(attachedUser);
 	}
 
 	@DeleteMapping("/{id}")

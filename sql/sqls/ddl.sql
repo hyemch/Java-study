@@ -65,7 +65,8 @@ alter table Student modify column name varchar(25) not null default '' comment '
 
 alter table Student modify column major tinyint unsigned null comment '학과코드';
 
-alter table Student add constraint foreign key fk_Student_major_Major(major) 
+alter table Student add constraint foreign key fk_Student_major_Major(major)
+
 	references Major(id) on DELETE set null on UPDATE cascade;
 
 desc Student;

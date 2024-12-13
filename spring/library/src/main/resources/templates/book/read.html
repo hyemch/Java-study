@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>도서 상세 보기</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<h1 th:text="#{title.bookDetail}">도서 상세 보기</h1>
+
+
+<div class="book-info">
+    <table>
+        <tr><th th:text="#{label.title}">도서명</th> <td th:text="${book.title}"></td></tr>
+        <tr><th th:text="#{label.author}">저자</th> <td th:text="${book.author}"></td></tr>
+        <tr><th th:text="#{label.publisher}">출판사</th> <td th:text="${book.publisher}"></td></tr>
+        <tr><th th:text="#{label.description}">설명</th> <td th:text="${book.description}"></td></tr>
+        <tr><th th:text="#{label.isbn}">ISBN</th> <td th:text="${book.isbn}"></td></tr>
+
+        <tr><th th:text="#{label.availability}">대출 가능 여부:</th>
+            <td class="availability" th:text="${book.availability ? 'O' : 'X'}"
+                  th:class="${book.availability ? 'available' : 'unavailable'}"></td>
+        </tr>
+        <tr th:if="${book.availability == true}">
+            <th th:text="#{label.borrower}">신청자:</th>
+            <td>
+                <form th:action="@{/book/borrow}" method="post">
+                    <input type="hidden" name="bno" th:value="${book.bno}" />
+                <label>
+                    <input type="text" name="borrowerId" th:placeholder="#{label.borrowerId}" required />
+                </label>
+                <button type="submit" th:text="#{button.borrow}">대출 신청</button>
+                </form>
+
+            </td>
+        </tr>
+    </table>
+    <a class="back-link " href="/book/list" th:text="#{button.backToList}">목록보기</a>
+</div>
+
+</body>
+</html>

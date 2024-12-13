@@ -6,7 +6,7 @@ select * from Emp;
 desc Emp;
 select * from Dept;
 
-alter table Emp add column auty tinyint(1) not null default 9 comment '권한(0:sys , 1:super, ..., 9:guest)' after dept;
+alter table Emp add column auth tinyint(1) not null default 9 comment '권한(0:sys , 1:super, ..., 9:guest)' after dept;
 
 desc Emp;
 

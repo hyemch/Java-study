@@ -1,0 +1,59 @@
+GET http://localhost:8080/users
+Accept: application/json
+
+### regist
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "name": "Kim1234"
+}
+
+### get a user
+GET http://localhost:8080/users/10
+
+### update user
+PATCH http://localhost:8080/users/1
+Content-Type: application/json
+
+{
+  "name": "New2"
+}
+
+### ss
+POST http://localhost:8080/hello
+
+### update
+PATCH http://localhost:8080/users/2
+Content-Type: application/json
+
+{
+  "name": "New"
+}
+
+### delete
+DELETE http://localhost:8080/users/1
+
+### get a user list
+GET http://localhost:8080/api/users
+Accept: application/json
+
+### regist
+POST http://localhost:8080/api/users
+Content-Type: application/json
+
+{
+  "name": "세종대왕",
+  "age": 53
+}
+
+### get a user
+GET http://localhost:8080/api/users/10
+
+### update user
+PATCH http://localhost:8080/api/users/10
+Content-Type: application/json
+
+{
+  "name": "New"
+}

@@ -1,0 +1,22 @@
+<div th:fragment="language-select">
+    <form method="get" th:action="@{/book/changeLanguage}" class="language-select" onsubmit="return validateLanguageSelection()">
+        <label for="language" th:text="#{message.language}">언어 :</label>
+        <select name="lang" id="language">
+            <option value="" selected th:text="#{message.language}"></option>
+            <option value="ko" th:text="#{message.language.korean}"></option>
+            <option value="en" th:text="#{message.language.english}"></option>
+        </select>
+            <button type="submit" th:text="#{button.applyLanguage}"></button>
+    </form>
+    <script>
+        function validateLanguageSelection() {
+            const languageSelect = document.getElementById("language");
+            if (languageSelect.value === "") {
+                alert("언어를 선택해주세요.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+
+</div>
