@@ -20,6 +20,6 @@ jobs:
         run: chmod +x gradlew
 
       - name: build with gradle
-        working-directory: spring/demo
+        working-directory: spring/board
         run: ./gradlew clean build -x test
 
